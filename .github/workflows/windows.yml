@@ -1,0 +1,22 @@
+name: windows
+
+on: [pull_request, push]
+
+jobs:
+  build-test:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup xmake
+        uses: xmake-io/github-action-setup-xmake@v1
+        with:
+          xmake-version: latest
+
+      - name: Build with xmake in debug mode
+        run: |
+          xmake f -p windows -a x64 -m debug
+          xmake -y -v -w
+
+      - name: Run debug test
+        run: xmake run test
