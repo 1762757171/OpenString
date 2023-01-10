@@ -9,21 +9,21 @@ using namespace easy;
 // convert the pointer of struct codeunit_sequence to this struct and access the private members.
 struct codeunit_sequence_accessor
 {
-	static constexpr u8 SSO_SIZE_MAX = 14;
+	static constexpr i32 SSO_SIZE_MAX = 14;
 
 	struct sso
 	{
 		u8 alloc : 1;
 		u8 size : 7;
-		std::array<byte, SSO_SIZE_MAX + 1> data;
+		std::array<char, SSO_SIZE_MAX + 1> data;
 	};
 
 	struct norm
 	{
 		u32 alloc : 1;
-		u32 size : 15;
-		u32 capacity;
-		byte* data;
+		i32 size : 15;
+		i32 capacity;
+		char* data;
 	};
 
 	[[nodiscard]] sso& as_sso()
@@ -50,7 +50,7 @@ struct codeunit_sequence_accessor
 		return !as_sso().alloc;
 	}
 
-	std::array<u8, 16> store;
+	std::array<char, 16> store;
 };
 
 #define ACCESS(cuq) ((codeunit_sequence_accessor*)(&(cuq)))
