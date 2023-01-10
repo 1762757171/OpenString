@@ -165,6 +165,36 @@ struct codepoint
 
 #pragma endregion iterators
 
+	[[nodiscard]] constexpr bool operator==(const codepoint& rhs) const noexcept
+	{
+		const i32 size_l = this->size();
+		const i32 size_r = rhs.size();
+		if(size_l != size_r)
+			return false;
+		for(i32 i = 0; i < size_l; ++i)
+			if(this->sequence[i] != rhs.sequence[i])
+				return false;
+		return true;
+	}
+
+	[[nodiscard]] constexpr bool operator==(const char* rhs) const noexcept
+	{
+		for(i32 i = 0; i < this->size(); ++i)
+			if(this->sequence[i] != rhs[i])
+				return false;
+		return true;
+	}
+
+	[[nodiscard]] constexpr bool operator==(const char32_t rhs) const noexcept
+	{
+		return this->get_codepoint() == rhs;
+	}
+
+	[[nodiscard]] constexpr bool operator!=(const codepoint& rhs) const noexcept
+	{
+		return !(*this == rhs);
+	}
+
 	[[nodiscard]] constexpr const char* data() const noexcept
 	{
 		return this->sequence.data();
@@ -189,39 +219,9 @@ struct codepoint
 	}
 };
 
-[[nodiscard]] constexpr bool operator==(const codepoint& lhs, const codepoint& rhs) noexcept
-{
-	const i32 size_l = lhs.size();
-	const i32 size_r = rhs.size();
-	if(size_l != size_r)
-		return false;
-	for(i32 i = 0; i < size_l; ++i)
-		if(lhs.sequence[i] != rhs.sequence[i])
-			return false;
-	return true;
-}
-
-[[nodiscard]] constexpr bool operator==(const codepoint& lhs, const char* rhs) noexcept
-{
-	for(i32 i = 0; i < lhs.size(); ++i)
-		if(lhs.sequence[i] != rhs[i])
-			return false;
-	return true;
-}
-
-[[nodiscard]] constexpr bool operator==(const codepoint& lhs, const char32_t rhs) noexcept
-{
-	return lhs.get_codepoint() == rhs;
-}
-
 [[nodiscard]] constexpr bool operator==(const char* lhs, const codepoint& rhs) noexcept
 {
 	return rhs == lhs;
-}
-
-[[nodiscard]] constexpr bool operator!=(const codepoint& lhs, const codepoint& rhs) noexcept
-{
-	return !(lhs == rhs);
 }
 
 NS_EASY_END

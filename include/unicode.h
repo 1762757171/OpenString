@@ -15,9 +15,9 @@ namespace unicode
 	{
 		if (c == 0)
 			return 1;
-		constexpr char mask = 0b10000000i8;
+		constexpr u8 mask = 0b10000000i8;
 		i32 size = 0;
-		char v = c;
+		u8 v = c;
 		while (v & mask)
 		{
 			++size;
