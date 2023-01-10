@@ -1,0 +1,22 @@
+name: windows
+
+on:
+  pull_request:
+  push:
+  release:
+    types: [published]
+
+jobs:
+  build-test:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: setup xmake
+        uses: xmake-io/github-action-setup-xmake@v1
+
+      - name: Build with xmake
+        run: xmake -w
+
+      - name: Test
+        run: xmake test
