@@ -8,7 +8,8 @@ add_requires("benchmark")
 cxflags = {}
 
 if is_host("windows") then
-    table.insert(cxflags, "/utf8")
+    table.insert(cxflags, "/execution-charset:utf-8")
+    table.insert(cxflags, "/source-charset:utf-8")
 end
 
 target("OpenString")

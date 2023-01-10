@@ -3,7 +3,7 @@ name: windows
 on: [pull_request, push]
 
 jobs:
-  build-test:
+  build-test-xmake:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
