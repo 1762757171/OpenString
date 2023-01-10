@@ -1,10 +1,6 @@
 name: build-test-windows
 
-on:
-  pull_request:
-  push:
-  release:
-    types: [published]
+on: [pull_request, push]
 
 jobs:
   build:
@@ -21,11 +17,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: setup xmake
+      - name: Setup xmake
         uses: xmake-io/github-action-setup-xmake@v1
+        with:
+          xmake-version: latest
 
-      - name: Build with xmake
-        run: xmake -w
-
-      - name: Test
-        run: xmake test
+      - name: Build with xmake and run test in debug mode
+        run: |
+          xmake f -p windows -a x64 -m debug -v
+          xmake -y -v -w
+          xmake run test
