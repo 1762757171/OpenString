@@ -1,6 +1,5 @@
 #pragma once
 
-#include "codeunit_sequence.h"
 #include "definitions.h"
 #include <array>
 #include <functional>
@@ -237,6 +236,8 @@ private:
 	[[nodiscard]] char* last();
 
 	[[nodiscard]] const char* last() const;
+
+	void deallocate();
 
 	void set_size(i32 size);
 

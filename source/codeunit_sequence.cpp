@@ -5,8 +5,9 @@
 #include "types.h"
 #include <algorithm>
 
-NS_EASY_BEGIN
+#include "adapters.h"
 
+NS_EASY_BEGIN
 #pragma region iterators
 codeunit_sequence::iterator::iterator() noexcept
 	: value()
@@ -156,7 +157,7 @@ codeunit_sequence::codeunit_sequence(const i32 size) noexcept
 		const i32 memory_capacity = helper::math::get_capacity(size + 1);
 		this->as_norm().alloc = true;
 		this->as_norm().size = 0;
-		this->as_norm().data = new char[memory_capacity];
+		this->as_norm().data = allocator<char>::allocate_array(memory_capacity);
 		this->as_norm().capacity = memory_capacity - 1;
 	}
 }
@@ -167,7 +168,9 @@ codeunit_sequence::codeunit_sequence(const codeunit_sequence& other) noexcept
 
 codeunit_sequence::codeunit_sequence(codeunit_sequence&& other) noexcept
 	: store_(other.store_)
-{ }
+{
+	other.store_.fill(0);
+}
 
 codeunit_sequence& codeunit_sequence::operator=(const codeunit_sequence& other) noexcept
 {
@@ -177,16 +180,15 @@ codeunit_sequence& codeunit_sequence::operator=(const codeunit_sequence& other) 
 
 codeunit_sequence& codeunit_sequence::operator=(codeunit_sequence&& other) noexcept
 {
-	if(!this->is_short())
-		delete[] this->as_norm().data;
+	this->deallocate();
 	this->store_ = std::forward<std::array<u8, 16>>(other.store_);
+	other.store_.fill(0);
 	return *this;
 }
 
 codeunit_sequence::~codeunit_sequence() noexcept
 {
-	if(!this->is_short())
-		delete[] this->as_norm().data;
+	this->deallocate();
 }
 
 codeunit_sequence::codeunit_sequence(const char* data) noexcept
@@ -389,7 +391,7 @@ codeunit_sequence& codeunit_sequence::replace(const codeunit_sequence_view& sour
 		{
 			// Need re-allocation, replace when moving
 			const i32 memory_capacity = helper::math::get_capacity(answer_size + 1);
-			const auto data = new char[memory_capacity];
+			const auto data = allocator<char>::allocate_array(memory_capacity);
 			
 			i32 found_index = this->index_of(source, selection);
 			i32 offset = 0;
@@ -406,9 +408,7 @@ codeunit_sequence& codeunit_sequence::replace(const codeunit_sequence_view& sour
 				data[i] = this->data()[i + offset];
 			}
 			
-			if(!this->is_short())
-				delete[] this->as_norm().data;
-			
+			this->deallocate();
 			this->as_norm().alloc = true;
 			this->as_norm().size = answer_size;
 			this->as_norm().capacity = memory_capacity - 1;
@@ -513,12 +513,11 @@ void codeunit_sequence::empty(const i32 size)
 	}
 	else
 	{
-		if(!this->is_short())
-			delete[] this->as_norm().data;
+		this->deallocate();
 		const i32 memory_capacity = helper::math::get_capacity(size + 1);
 		this->as_norm().alloc = true;
 		this->as_norm().size = 0;
-		this->as_norm().data = new char[memory_capacity];
+		this->as_norm().data = allocator<char>::allocate_array(memory_capacity);
 		this->as_norm().data[0] = '\0';
 		this->as_norm().capacity = memory_capacity - 1;
 	}
@@ -529,11 +528,10 @@ void codeunit_sequence::reserve(const i32 size)
 	if(size <= this->get_capacity())
 		return;
 	const i32 memory_capacity = helper::math::get_capacity(size + 1);
-	const auto data = new char[memory_capacity];
+	const auto data = allocator<char>::allocate_array(memory_capacity);
 	const i32 old_size = this->size();
 	std::copy(this->data(), this->last(), data);
-	if(!this->is_short())
-		delete[] this->as_norm().data;
+	this->deallocate();
 	this->as_norm().alloc = true;
 	this->as_norm().size = old_size;
 	this->as_norm().capacity = memory_capacity - 1;
@@ -598,6 +596,16 @@ u32 codeunit_sequence::split(const codeunit_sequence_view& splitter, std::vector
 		view = right;
 	}
 	return count;
+}
+
+codeunit_sequence_view codeunit_sequence::view_remove_prefix(const codeunit_sequence_view& prefix) const noexcept
+{
+	return this->view().remove_prefix(prefix);
+}
+
+codeunit_sequence_view codeunit_sequence::view_remove_suffix(const codeunit_sequence_view& suffix) const noexcept
+{
+	return this->view().remove_suffix(suffix);
 }
 
 codeunit_sequence& codeunit_sequence::self_trim_start(const codeunit_sequence_view& characters) noexcept
@@ -709,6 +717,12 @@ char* codeunit_sequence::last()
 const char* codeunit_sequence::last() const
 {
 	return this->data() + this->size();
+}
+
+void codeunit_sequence::deallocate()
+{
+	if(!this->is_short())
+		allocator<char>::deallocate_array( this->as_norm().data );
 }
 
 void codeunit_sequence::set_size(i32 size)
