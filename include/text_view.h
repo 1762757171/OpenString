@@ -27,7 +27,7 @@ public:
 		: view_(data, count)
 	{ }
 	explicit constexpr text_view(const char* str) noexcept
-		: text_view(str, helper::string::count_string_length(str))
+		: view_(str)
 	{ }
 	explicit constexpr text_view(const codeunit_sequence_view& view) noexcept
 		: view_(view)
@@ -99,7 +99,8 @@ public:
 			{
 				using self_operator = const_iterator& (const_iterator::*)();
 				const auto& op = diff > 0 ? static_cast<self_operator>(&const_iterator::operator++) : static_cast<self_operator>(&const_iterator::operator--);
-				for(i32 i = 0; i < helper::math::abs(diff); ++i)
+				const i32 diff_abs = diff > 0 ? diff : -diff;
+				for(i32 i = 0; i < diff_abs; ++i)
 					(this->*op)();
 			}
 			return *this;

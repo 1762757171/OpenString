@@ -82,7 +82,6 @@
     <ClInclude Include="include\codeunit_sequence_view.h" />
     <ClInclude Include="include\definitions.h" />
     <ClInclude Include="include\format.h" />
-    <ClInclude Include="include\helpers.h" />
     <ClInclude Include="include\index_interval.h" />
     <ClInclude Include="include\text.h" />
     <ClInclude Include="include\text_view.h" />

@@ -1,4 +1,3 @@
-#include "helpers.h"
 #include "codeunit_sequence.h"
 #include "codeunit_sequence_view.h"
 #include "index_interval.h"
@@ -8,7 +7,27 @@
 #include "adapters.h"
 
 NS_EASY_BEGIN
+
+namespace details
+{
+	[[nodiscard]] constexpr i32 get_capacity(const i32 v) noexcept
+	{
+		u8 bit_pos = 0;
+		i32 value = v;
+		while(value != 0)
+		{
+			value >>= 1;
+			++bit_pos;
+		}
+		i32 ans = 1 << bit_pos;
+		if(ans == (v << 1))
+			ans >>= 1;
+		return ans;
+	}
+}
+
 #pragma region iterators
+
 codeunit_sequence::iterator::iterator() noexcept
 	: value()
 { }
@@ -154,7 +173,7 @@ codeunit_sequence::codeunit_sequence(const i32 size) noexcept
 {
 	if(size > SSO_SIZE_MAX)
 	{
-		const i32 memory_capacity = helper::math::get_capacity(size + 1);
+		const i32 memory_capacity = details::get_capacity(size + 1);
 		this->as_norm().alloc = true;
 		this->as_norm().size = 0;
 		this->as_norm().data = allocator<char>::allocate_array(memory_capacity);
@@ -390,7 +409,7 @@ codeunit_sequence& codeunit_sequence::replace(const codeunit_sequence_view& sour
 		if(const i32 old_capacity = this->get_capacity(); old_capacity < answer_size)
 		{
 			// Need re-allocation, replace when moving
-			const i32 memory_capacity = helper::math::get_capacity(answer_size + 1);
+			const i32 memory_capacity = details::get_capacity(answer_size + 1);
 			const auto data = allocator<char>::allocate_array(memory_capacity);
 			
 			i32 found_index = this->index_of(source, selection);
@@ -514,7 +533,7 @@ void codeunit_sequence::empty(const i32 size)
 	else
 	{
 		this->deallocate();
-		const i32 memory_capacity = helper::math::get_capacity(size + 1);
+		const i32 memory_capacity = details::get_capacity(size + 1);
 		this->as_norm().alloc = true;
 		this->as_norm().size = 0;
 		this->as_norm().data = allocator<char>::allocate_array(memory_capacity);
@@ -527,7 +546,7 @@ void codeunit_sequence::reserve(const i32 size)
 {
 	if(size <= this->get_capacity())
 		return;
-	const i32 memory_capacity = helper::math::get_capacity(size + 1);
+	const i32 memory_capacity = details::get_capacity(size + 1);
 	const auto data = allocator<char>::allocate_array(memory_capacity);
 	const i32 old_size = this->size();
 	std::copy(this->data(), this->last(), data);
