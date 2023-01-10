@@ -5,13 +5,21 @@ set_languages("c++17")
 add_requires("gtest")
 add_requires("benchmark")
 
+cxflags = {}
+
+if is_host("windows") then
+    table.insert(cxflags, "/utf8")
+end
+
 target("OpenString")
     set_kind("static")
+    add_cxflags(cxflags, {force = true})
     add_includedirs("include")
     add_files("source/*.cpp")
 
 target("test")
     set_kind("binary")
+    add_cxflags(cxflags, {force = true})
     add_packages("gtest")
     add_includedirs("include")
     add_deps("OpenString")
@@ -19,6 +27,7 @@ target("test")
 
 target("benchmark")
     set_kind("binary")
+    add_cxflags(cxflags, {force = true})
     add_packages("benchmark")
     add_includedirs("include")
     add_deps("OpenString")
