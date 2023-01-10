@@ -76,6 +76,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\adapters.h" />
     <ClInclude Include="include\codepoint.h" />
     <ClInclude Include="include\codeunit_sequence.h" />
     <ClInclude Include="include\codeunit_sequence_view.h" />
