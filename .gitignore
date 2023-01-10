@@ -14,6 +14,9 @@ compile_commands.json
 # Visual Studio cache/options directory
 .vs/
 
+# Visual Studio Code cache/options directory
+.vscode/settings.json
+
 # JetBrains Rider cache/options directory
 .idea/
 
