@@ -1,6 +1,7 @@
 #pragma once
 #include "definitions.h"
 #include "types.h"
+#include <array>
 
 NS_EASY_BEGIN
 

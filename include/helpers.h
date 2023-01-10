@@ -1,6 +1,5 @@
 // ReSharper disable CommentTypo
 #pragma once
-#include <tuple>
 #include <algorithm>
 #include "definitions.h"
 #include "types.h"

@@ -4,6 +4,7 @@
 #include "types.h"
 #include "helpers.h"
 #include "index_interval.h"
+#include <tuple>
 
 NS_EASY_BEGIN
 

@@ -2,6 +2,7 @@
 
 #include "types.h"
 #include "unicode.h"
+#include <array>
 
 NS_EASY_BEGIN
 
