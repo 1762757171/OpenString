@@ -1,0 +1,22 @@
+# Xmake cache
+.xmake/
+build/
+
+# Build files
+x64/
+
+# nuget packages
+packages/
+
+# Generated files
+compile_commands.json
+
+# Visual Studio cache/options directory
+.vs/
+
+# JetBrains Rider cache/options directory
+.idea/
+
+# JetBrains Rider auto-generated XML file
+*.sln.DotSettings
+
