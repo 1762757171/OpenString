@@ -87,6 +87,7 @@
     <ClInclude Include="..\include\text_view.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\source\format.cpp" />
     <ClCompile Include="..\source\text.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
