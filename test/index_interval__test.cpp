@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "index_interval.h"
+#include "common/index_interval.h"
 
 using namespace easy;
 
