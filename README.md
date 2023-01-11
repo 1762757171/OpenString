@@ -26,6 +26,12 @@ todo
 
 *A:* This project provides two ways to build, both Visual Studio and XMake are supported. CMake support may be added later.
 
+## TODO
+
+- Folder directory path library
+- A ``name`` class for easy copying and comparing
+- Localization support
+
 ## Thanks
 
 - [{fmt}](https://github.com/fmtlib/fmt): Provides a lot of inspiration for the formatting method.
