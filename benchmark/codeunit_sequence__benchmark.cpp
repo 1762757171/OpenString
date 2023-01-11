@@ -1,6 +1,6 @@
 #include "pch.h"
-#include "codeunit_sequence.h"
 #include "types.h"
+#include "text.h"
 
 void std_string_construct(benchmark::State& state)
 {
