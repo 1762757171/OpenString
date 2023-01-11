@@ -1,8 +1,12 @@
+// OpenString - index interval for accessing range of sequence container 
+//
+// Copyright (c) 2022 - present, [Hoshizora Ming]
+// All rights reserved.
 
 #pragma once
-#include <limits>
 #include "definitions.h"
-#include "types.h"
+#include "basic_types.h"
+#include <limits>
 
 NS_EASY_BEGIN
 

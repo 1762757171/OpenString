@@ -1,6 +1,11 @@
+// OpenString - unicode related functions
+//
+// Copyright (c) 2022 - present, [Hoshizora Ming]
+// All rights reserved.
+
 #pragma once
 #include "definitions.h"
-#include "types.h"
+#include "basic_types.h"
 #include <array>
 
 NS_EASY_BEGIN

@@ -78,13 +78,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\adapters.h" />
-    <ClInclude Include="include\definitions.h" />
+    <ClInclude Include="include\common\basic_types.h" />
+    <ClInclude Include="include\common\definitions.h" />
+    <ClInclude Include="include\common\index_interval.h" />
+    <ClInclude Include="include\common\unicode.h" />
     <ClInclude Include="include\format.h" />
-    <ClInclude Include="include\index_interval.h" />
     <ClInclude Include="include\text.h" />
     <ClInclude Include="include\text_view.h" />
-    <ClInclude Include="include\types.h" />
-    <ClInclude Include="include\unicode.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\text.cpp" />

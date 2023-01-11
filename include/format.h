@@ -1,14 +1,17 @@
-#pragma once
+// OpenString - formatting library
+//
+// Copyright (c) 2022 - present, [Hoshizora Ming]
+// All rights reserved.
 
-#include "definitions.h"
-#include "index_interval.h"
-#include "types.h"
+#pragma once
+#include "common/definitions.h"
+#include "common/index_interval.h"
+#include "common/basic_types.h"
+#include "text.h"
 #include <array>
 #include <cmath>
 #include <stdexcept>
 #include <charconv>
-
-#include "text.h"
 
 NS_EASY_BEGIN
     class format_error : public std::runtime_error

@@ -1,5 +1,9 @@
-#include "text.h"
+// OpenString - human-readable string
+//
+// Copyright (c) 2022 - present, [Hoshizora Ming]
+// All rights reserved.
 
+#include "text.h"
 #include "adapters.h"
 
 NS_EASY_BEGIN

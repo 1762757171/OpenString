@@ -1,5 +1,11 @@
+// OpenString - human-readable string
+//
+// Copyright (c) 2022 - present, [Hoshizora Ming]
+// All rights reserved.
+
 #pragma once
-#include "definitions.h"
+#include "common/definitions.h"
+#include "common/basic_types.h"
 #include "text_view.h"
 #include <vector>
 
@@ -238,7 +244,7 @@ private:
 
 	void set_size(i32 size);
 
-	std::array<byte, 16> store_;
+	std::array<u8, 16> store_;
 };
 
 template<typename Container>

@@ -1,3 +1,8 @@
+// OpenString - basic types
+//
+// Copyright (c) 2022 - present, [Hoshizora Ming]
+// All rights reserved.
+
 #pragma once
 #include "definitions.h"
 
@@ -10,8 +15,6 @@ using u32 = unsigned int;
 using i32 = signed int;
 using u64 = unsigned long long;
 using i64 = signed long long;
-
-using byte = u8;
 
 inline constexpr i32 index_invalid = -1;
 
