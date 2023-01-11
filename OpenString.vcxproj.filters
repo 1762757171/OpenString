@@ -11,19 +11,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\codeunit_sequence.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\codeunit_sequence_view.h">
-      <Filter>include</Filter>
-    </ClInclude>
     <ClInclude Include="include\definitions.h">
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\format.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\helpers.h">
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\index_interval.h">
@@ -38,17 +29,14 @@
     <ClInclude Include="include\types.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\codepoint.h">
+    <ClInclude Include="include\unicode.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\unicode.h">
+    <ClInclude Include="include\adapters.h">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\codeunit_sequence.cpp">
-      <Filter>source</Filter>
-    </ClCompile>
     <ClCompile Include="source\text.cpp">
       <Filter>source</Filter>
     </ClCompile>
