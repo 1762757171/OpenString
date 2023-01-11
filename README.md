@@ -1,4 +1,4 @@
-<h1 style="text-align: center;">OpenString</h1>
+<h1 align="center">OpenString</h1>
 
 [![windows](https://github.com/1762757171/OpenString/actions/workflows/windows.yml/badge.svg)](https://github.com/1762757171/OpenString/actions/workflows/windows.yml)
 
