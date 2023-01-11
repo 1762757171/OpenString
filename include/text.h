@@ -353,6 +353,11 @@ public:
 
 	text& replace(const text_view& source, const text_view& destination, const index_interval& range = index_interval::all());
 	text& replace(const index_interval& range, const text_view& destination);
+	
+	text& self_remove_prefix(const text_view& prefix) noexcept;
+	text& self_remove_suffix(const text_view& suffix) noexcept;
+	[[nodiscard]] text_view view_remove_prefix(const text_view& prefix) const noexcept;
+	[[nodiscard]] text_view view_remove_suffix(const text_view& suffix) const noexcept;
 
 	text& self_trim_start(const text_view& characters = text_view(" \t")) noexcept;
 	text& self_trim_end(const text_view& characters = text_view(" \t")) noexcept;

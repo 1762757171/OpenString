@@ -549,13 +549,13 @@ public:
 	constexpr text_view(const char* data, const size_t count) noexcept
 		: view_(data, count)
 	{ }
-	explicit constexpr text_view(const char* str) noexcept
+	constexpr text_view(const char* str) noexcept
 		: view_(str)
 	{ }
-	explicit constexpr text_view(const codeunit_sequence_view& view) noexcept
+	constexpr text_view(const codeunit_sequence_view& view) noexcept
 		: view_(view)
 	{ }
-	explicit constexpr text_view(const codepoint& cp) noexcept
+	constexpr text_view(const codepoint& cp) noexcept
 		: view_(cp.data(), cp.size())
 	{ }
 
@@ -849,6 +849,16 @@ public:
 	[[nodiscard]] constexpr bool ends_with(const text_view& suffix) const noexcept
 	{
 		return this->view_.ends_with(suffix.view_);
+	}
+
+	[[nodiscard]] constexpr text_view remove_prefix(const text_view& prefix) const noexcept
+	{
+		return text_view{ this->view_.remove_prefix(prefix.view_) };
+	}
+
+	[[nodiscard]] constexpr text_view remove_suffix(const text_view& suffix) const noexcept
+	{
+		return text_view{ this->view_.remove_suffix(suffix.view_) };
 	}
 
 	[[nodiscard]] constexpr text_view trim_start(const text_view& text_set = text_view(" \t")) const noexcept

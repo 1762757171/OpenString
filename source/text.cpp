@@ -1015,6 +1015,28 @@ text& text::replace(const index_interval& range, const text_view& destination)
 	return *this;
 }
 
+text& text::self_remove_prefix(const text_view& prefix) noexcept
+{
+	this->sequence_.self_remove_prefix(prefix.data());
+	return *this;
+}
+
+text& text::self_remove_suffix(const text_view& suffix) noexcept
+{
+	this->sequence_.self_remove_suffix(suffix.data());
+	return *this;
+}
+
+text_view text::view_remove_prefix(const text_view& prefix) const noexcept
+{
+	return this->view().remove_prefix(prefix);
+}
+
+text_view text::view_remove_suffix(const text_view& suffix) const noexcept
+{
+	return this->view().remove_suffix(suffix);
+}
+
 text& text::self_trim_start(const text_view& characters) noexcept
 {
 	if(this->is_empty())

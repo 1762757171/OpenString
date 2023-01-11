@@ -57,6 +57,19 @@ TEST(text, replace)
 	}
 }
 
+TEST(text, remove_prefix_suffix)
+{
+	{
+		text t = "She says: 你好😙"_txtv;
+		t.self_remove_prefix("He says:");
+		EXPECT_EQ(t, "She says: 你好😙"_txtv);
+		t.self_remove_prefix("She says: ");
+		EXPECT_EQ(t, "你好😙"_txtv);
+		t.self_remove_suffix("😙"_txtv);
+		EXPECT_EQ(t, "你好"_txtv);
+	}
+}
+
 TEST(text, trim)
 {
 	{
