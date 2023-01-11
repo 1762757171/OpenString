@@ -110,6 +110,10 @@ public:
 		: codeunit_sequence_view(str, details::count_string_length(str))
 	{ }
 
+	explicit constexpr codeunit_sequence_view(const codepoint& cp) noexcept
+		: codeunit_sequence_view(cp.data(), cp.size())
+	{ }
+
 #pragma endregion constructors
 
 #pragma region iterators

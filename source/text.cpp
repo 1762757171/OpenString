@@ -3,7 +3,8 @@
 #include "adapters.h"
 
 NS_EASY_BEGIN
-	namespace details
+
+namespace details
 {
 	[[nodiscard]] constexpr i32 get_capacity(const i32 v) noexcept
 	{
@@ -273,7 +274,7 @@ bool codeunit_sequence::operator!=(const char* rhs) const noexcept
 	return this->view() != codeunit_sequence_view(rhs);
 }
 
-codeunit_sequence& codeunit_sequence::operator+=(codeunit_sequence_view rhs) noexcept
+codeunit_sequence& codeunit_sequence::operator+=(const codeunit_sequence_view& rhs) noexcept
 {
 	const i32 answer_size = this->size() + rhs.size();
 	this->reserve(answer_size);
@@ -298,6 +299,11 @@ codeunit_sequence& codeunit_sequence::append(const i32 count, const char codeuni
 codeunit_sequence& codeunit_sequence::operator+=(const codeunit_sequence& rhs) noexcept
 {
 	return this->operator+=(rhs.view());
+}
+
+codeunit_sequence& codeunit_sequence::operator+=(const codepoint& cp) noexcept
+{
+	return this->operator+=(codeunit_sequence_view(cp));
 }
 
 codeunit_sequence& codeunit_sequence::operator+=(const char* rhs) noexcept
@@ -486,6 +492,16 @@ codeunit_sequence& codeunit_sequence::replace(const index_interval& range, const
 	}
 
 	return *this;
+}
+
+codeunit_sequence& codeunit_sequence::self_remove_prefix(const codeunit_sequence_view& prefix) noexcept
+{
+	return this->starts_with(prefix) ? this->subsequence({ '[', prefix.size(), '~' }) : *this;
+}
+
+codeunit_sequence& codeunit_sequence::self_remove_suffix(const codeunit_sequence_view& suffix) noexcept
+{
+	return this->ends_with(suffix) ? this->subsequence({ '[', 0, -suffix.size(), ')' }) : *this;
 }
 
 i32 codeunit_sequence::index_of(const codeunit_sequence_view& pattern, const index_interval& range) const noexcept
@@ -776,6 +792,25 @@ text::text(codeunit_sequence_view sequence) noexcept
 text text::from_utf8(const char* str) noexcept
 {
 	return { codeunit_sequence_view(str) };
+}
+
+text text::from_utf32(const char32_t* str) noexcept
+{
+	const char32_t* p = str;
+	i32 size = 0;
+	while(*p != 0)
+	{
+		size += unicode::parse_utf8_length(*p);
+		++p;
+	}
+	codeunit_sequence sequence(size);
+	p = str;
+	while(*p != 0)
+	{
+		sequence += codepoint(*p);
+		++p;
+	}
+	return { std::move(sequence) };
 }
 
 text::const_iterator text::begin() const noexcept

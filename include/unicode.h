@@ -11,7 +11,7 @@ namespace unicode
 	 * @param c start of a utf8 sequence
 	 * @return length of utf8 sequence, return 0 if this is not start of a utf8 sequence
 	 */
-	constexpr i32 parse_utf8_length(const char c) noexcept
+	[[nodiscard]] constexpr i32 parse_utf8_length(const char c) noexcept
 	{
 		if (c == 0)
 			return 1;
@@ -34,7 +34,7 @@ namespace unicode
 	 * @param length length of a utf8 sequence
 	 * @return mask of utf8 code unit
 	 */
-	constexpr char get_utf8_mask(const i32 length) noexcept
+	[[nodiscard]] constexpr char get_utf8_mask(const i32 length) noexcept
 	{
 		constexpr char masks[] =
 		{
@@ -52,7 +52,7 @@ namespace unicode
 	 * @param length length of utf-8 code unit sequence
 	 * @return codepoint of input utf8 code unit sequence
 	 */
-	constexpr char32_t utf8_to_utf32(char const* const utf8, const i32 length) noexcept
+	[[nodiscard]] constexpr char32_t utf8_to_utf32(char const* const utf8, const i32 length) noexcept
 	{
 		if (!utf8) 
 			return 0;
@@ -70,11 +70,22 @@ namespace unicode
 		return utf32;
 	}
 
+	[[nodiscard]] constexpr i32 parse_utf8_length(const char32_t utf32) noexcept
+	{
+		if (utf32 < 0x80)
+			return 1;
+		if (utf32 < 0x800)
+			return 2;
+		if (utf32 < 0x10000)
+			return 3;
+		return 4;
+	}
+
 	/**
 	 * @param utf32 input utf-32 code unit
 	 * @return decoded utf-8 code unit sequence from utf-32 code unit
 	 */
-	constexpr std::array<char, 4> utf32_to_utf8(const char32_t utf32) noexcept
+	[[nodiscard]] constexpr std::array<char, 4> utf32_to_utf8(const char32_t utf32) noexcept
 	{
 		if (utf32 < 0x80) return
 			{ static_cast<char>(utf32),

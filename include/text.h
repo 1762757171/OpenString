@@ -104,12 +104,13 @@ public:
 	/**
 	 * Append a codeunit sequence back.
 	 * @return ref of this codeunit sequence.
-	 * @todo Think: Is operators needed? It's costly for compiler.
+	 * @todo Think: Is operators overload needed? It's costly for compiler.
 	 */
 	codeunit_sequence& append(i32 count, char codeunit = '\0') noexcept;
 
-	codeunit_sequence& operator+=(codeunit_sequence_view rhs) noexcept;
+	codeunit_sequence& operator+=(const codeunit_sequence_view& rhs) noexcept;
 	codeunit_sequence& operator+=(const codeunit_sequence& rhs) noexcept;
+	codeunit_sequence& operator+=(const codepoint& cp) noexcept;
 	codeunit_sequence& operator+=(const char* rhs) noexcept;
 	codeunit_sequence& operator+=(char codeunit) noexcept;
 

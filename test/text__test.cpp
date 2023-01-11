@@ -10,19 +10,19 @@ TEST(text, construct)
 		EXPECT_TRUE(t.is_empty());
 	}
 	{
-		const text t("Hello world!"_cuqv);
+		const text t("Hello 🌏!"_cuqv);
 		EXPECT_FALSE(t.is_empty());
-		EXPECT_EQ(t.size(), 12);
-	}
-	{
-		const text t = "This is a text."_txtv;
-		EXPECT_FALSE(t.is_empty());
-		EXPECT_EQ(t.size(), 15);
+		EXPECT_EQ(t.size(), 8);
 	}
 	{
 		const text t = "This is a very long text.";
 		EXPECT_FALSE(t.is_empty());
 		EXPECT_EQ(t.size(), 25);
+	}
+	{
+		const text t = text::from_utf32(U"Hello 🌏!");
+		EXPECT_FALSE(t.is_empty());
+		EXPECT_EQ(t.size(), 8);
 	}
 }
 
