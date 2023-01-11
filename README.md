@@ -1,18 +1,20 @@
-<h1 align="center">OpenString</h1>
+<div align="center">
+  <h1>OpenString</h1>
+    <div>
+      <a href="https://github.com/1762757171/OpenString/actions/workflows/windows.yml">
+            <img src="https://github.com/1762757171/OpenString/actions/workflows/windows.yml/badge.svg" alt="ci-windows" />
+      </a>
+      <a>
+            <img src="https://img.shields.io/badge/progress-15%25-yellow" alt="progress" />
+      </a>
+    </div>
 
-[![windows][ci-badge]][ci-action] ![progress][progress-badge]
-
-[ci-badge]: https://github.com/1762757171/OpenString/actions/workflows/windows.yml/badge.svg
-[ci-action]: https://github.com/1762757171/OpenString/actions/workflows/windows.yml
-
-[progress-badge]: https://img.shields.io/badge/progress-15%25-yellow
----
-
-**OpenString** is an open-source C++17 string library for game developing, which is based on utf-8 encoding, providing easy-using operating functions and {fmt}-like formatting methods.
+  <b>A user-friendly string library for game developing, which is based on utf-8 encoding, providing easy-using operating functions and {fmt}-like formatting methods.</b><br/>
+</div>
 
 ## License
 
-OpenString is distributed under the MIT license.
+*OpenString* is distributed under the MIT license.
 
 ## Features
 
