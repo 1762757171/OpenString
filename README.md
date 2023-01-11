@@ -9,7 +9,7 @@
       </a>
     </div>
 
-  <b>A user-friendly string library for game developing, which is based on utf-8 encoding, providing easy-using operating functions and {fmt}-like formatting methods.</b><br/>
+  <b>A modern user-friendly string library for game developing</b><br/>
 </div>
 
 ## License
@@ -29,7 +29,6 @@ todo
 ## Q&A
 
 *Q:* Why both Visual Studio solution file and xmake.lua exist?
-
 *A:* This project provides two ways to build, both Visual Studio and XMake are supported. CMake support may be added later.
 
 ## TODO
