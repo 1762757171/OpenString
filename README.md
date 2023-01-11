@@ -5,7 +5,7 @@
 [ci-badge]: https://github.com/1762757171/OpenString/actions/workflows/windows.yml/badge.svg
 [ci-action]: https://github.com/1762757171/OpenString/actions/workflows/windows.yml
 
-[progress-badge]: https://img.shields.io/badge/progress-15%25-brightgreen
+[progress-badge]: https://img.shields.io/badge/progress-15%25-yellow
 ---
 
 **OpenString** is an open-source C++17 string library for game developing, which is based on utf-8 encoding, providing easy-using operating functions and {fmt}-like formatting methods.
