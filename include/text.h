@@ -26,11 +26,11 @@ public:
 
 	~codeunit_sequence() noexcept;
 
-	codeunit_sequence(const char* data) noexcept;
+	explicit codeunit_sequence(const char* data) noexcept;
 	codeunit_sequence(const char* from, const char* last) noexcept;
 	codeunit_sequence(const char* data, i32 count) noexcept;
 
-	codeunit_sequence(codeunit_sequence_view sv) noexcept;
+	explicit codeunit_sequence(codeunit_sequence_view sv) noexcept;
 
 	template<typename Container>
 	static codeunit_sequence join(const Container& container, const codeunit_sequence_view& separator) noexcept;

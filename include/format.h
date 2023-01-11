@@ -14,7 +14,8 @@
 #include <charconv>
 
 NS_EASY_BEGIN
-    class format_error : public std::runtime_error
+
+class format_error : public std::runtime_error
 {
 public:
     explicit format_error(const codeunit_sequence_view& message)
