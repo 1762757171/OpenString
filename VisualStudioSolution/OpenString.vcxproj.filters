@@ -9,35 +9,38 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="include\common">
+      <UniqueIdentifier>{4adabc1e-7b75-4860-a3a1-f9098d269d47}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\definitions.h">
+    <ClInclude Include="..\include\format.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\format.h">
+    <ClInclude Include="..\include\text.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\index_interval.h">
+    <ClInclude Include="..\include\text_view.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\text.h">
+    <ClInclude Include="..\include\adapters.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\text_view.h">
+    <ClInclude Include="..\include\common\basic_types.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\types.h">
+    <ClInclude Include="..\include\common\definitions.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\unicode.h">
+    <ClInclude Include="..\include\common\index_interval.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\adapters.h">
+    <ClInclude Include="..\include\common\unicode.h">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\text.cpp">
+    <ClCompile Include="..\source\text.cpp">
       <Filter>source</Filter>
     </ClCompile>
   </ItemGroup>

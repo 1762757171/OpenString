@@ -11,33 +11,33 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="test\codeunit_sequence__test.cpp">
+    <ClCompile Include="..\test\codeunit_sequence__test.cpp">
       <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="test\codeunit_sequence_view__test.cpp">
+    <ClCompile Include="..\test\codeunit_sequence_view__test.cpp">
       <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="test\format__test.cpp">
+    <ClCompile Include="..\test\format__test.cpp">
       <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="test\index_interval__test.cpp">
+    <ClCompile Include="..\test\index_interval__test.cpp">
       <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="test\main.cpp">
+    <ClCompile Include="..\test\main.cpp">
       <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="test\text__test.cpp">
+    <ClCompile Include="..\test\text__test.cpp">
       <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="test\text_view__test.cpp">
+    <ClCompile Include="..\test\text_view__test.cpp">
       <Filter>source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="test\gtest_printers_extension.h">
+    <ClInclude Include="..\test\gtest_printers_extension.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="test\pch.h">
+    <ClInclude Include="..\test\pch.h">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>
