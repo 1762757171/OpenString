@@ -1,7 +1,11 @@
 <h1 align="center">OpenString</h1>
 
-[![windows](https://github.com/1762757171/OpenString/actions/workflows/windows.yml/badge.svg)](https://github.com/1762757171/OpenString/actions/workflows/windows.yml)
+[![windows][ci-badge]][ci-action] ![progress][progress-badge]
 
+[ci-badge]: https://github.com/1762757171/OpenString/actions/workflows/windows.yml/badge.svg
+[ci-action]: https://github.com/1762757171/OpenString/actions/workflows/windows.yml
+
+[progress-badge]: https://img.shields.io/badge/progress-15%-brightgreen
 ---
 
 **OpenString** is an open-source C++17 string library for game developing, which is based on utf-8 encoding, providing easy-using operating functions and {fmt}-like formatting methods.
