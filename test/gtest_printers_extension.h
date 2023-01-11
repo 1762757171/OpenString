@@ -1,6 +1,5 @@
 #pragma once
 #include <ostream>
-
 #include "common/index_interval.h"
 #include "text.h"
 
@@ -46,6 +45,8 @@ inline std::ostream& operator<<(std::ostream& os, const text& v)
 
 #define DEFINE_PRINT_TO(T) inline void PrintTo(const T& v, std::ostream* os) { *os << v; }
 
+DEFINE_PRINT_TO(codeunit_sequence_view)
+DEFINE_PRINT_TO(codeunit_sequence)
 DEFINE_PRINT_TO(text_view)
 DEFINE_PRINT_TO(text)
 

@@ -2,32 +2,17 @@
 
 NS_EASY_BEGIN
 
-namespace details
-{
-    [[nodiscard]] constexpr u8 get_digit_count(const u8 size) noexcept
-    {
-        if(size == 1)
-            return 4; // "-128"
-        if(size == 2)
-            return 6; // "-32768"
-        if(size == 4)
-            return 11; // "-2147483648"
-        if(size == 8)
-            return 20; // "-9223372036854775808"
-        return 0;
-    }
-}
-
-codeunit_sequence details::format_integer(const i32& value, const codeunit_sequence_view& specification)
+codeunit_sequence details::format_integer(const i64& value, const codeunit_sequence_view& specification)
 {
     char type = 'd';
     i32 holding = -1;
+    bool with_prefix = false;
     if (!specification.is_empty())
     {
         codeunit_sequence_view parsing = specification;
         if ("bcdox"_cuqv.contains(parsing[-1]))
         {
-            type = parsing[0];
+            type = parsing[-1];
             parsing = parsing.subview({ '[', 0, -2, ']' });
         }
         if(!parsing.is_empty())
@@ -43,13 +28,23 @@ codeunit_sequence details::format_integer(const i32& value, const codeunit_seque
             }
         }
         if(!parsing.is_empty())
+        {
+            if(parsing[-1] == '#')
+            {
+                with_prefix = true;
+                parsing = parsing.subview({ '[', 0, -1, ')' });
+            }
+        }
+        if(!parsing.is_empty())
             throw format_error("Invalid format specification [{}]!"_cuqv, specification);
     }
     i32 base = 10;
+    codeunit_sequence_view prefix;
     switch (type)
     {
     case 'b':
         base = 2;
+        prefix = "0b"_cuqv;
         break;
     case 'c':
         return codeunit_sequence{ static_cast<char>(value) };
@@ -57,27 +52,33 @@ codeunit_sequence details::format_integer(const i32& value, const codeunit_seque
         break;
     case 'o':
         base = 8;
+        prefix = "0o"_cuqv;
         break;
     case 'x':
         base = 16;
+        prefix = "0x"_cuqv;
         break;
     default:
         break;
     }
-    char buffer[details::get_digit_count(sizeof(i32))];
+    if(!with_prefix)
+        prefix = ""_cuqv;
+    
+    char buffer[20];    // "-9223372036854775808"
     const auto [ last, error ] = std::to_chars(buffer, buffer + sizeof(buffer), value, base);
     const i32 used_size = static_cast<i32>(last - buffer);
+    codeunit_sequence result(prefix);
     if(used_size < holding)
     {
         const i32 padding_size = holding - used_size;
-        codeunit_sequence result(holding);
+        result.reserve(holding + prefix.size());
         for(i32 i = 0; i < padding_size; ++i)
             result += '0';
         result += codeunit_sequence_view{ buffer, last };
         return result;
     }
 
-    return codeunit_sequence{ buffer, last };
+    return result + codeunit_sequence_view{ buffer, last };
 }
 
 codeunit_sequence details::format_float(const float& value, const codeunit_sequence_view& specification)

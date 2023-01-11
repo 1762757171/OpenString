@@ -29,10 +29,7 @@ public:
 template<class T>
 struct formatter
 {
-    static codeunit_sequence format_argument(const T& value, const codeunit_sequence_view& specification)
-    {
-        return { };
-    }
+    static codeunit_sequence format_argument(const T& value, const codeunit_sequence_view& specification);
 };
 
 namespace details
@@ -170,7 +167,7 @@ namespace details
 
     struct format_argument_pack
     {
-        using formatter_type = codeunit_sequence(*)(const void* value, const codeunit_sequence_view specification);
+        using formatter_type = codeunit_sequence(*)(const void* value, codeunit_sequence_view specification);
 
         const void* value;
         formatter_type formatter;
@@ -257,7 +254,7 @@ template<class...Args>
 
 namespace details
 {
-    codeunit_sequence format_integer(const i32& value, const codeunit_sequence_view& specification);
+    codeunit_sequence format_integer(const i64& value, const codeunit_sequence_view& specification);
     codeunit_sequence format_float(const float& value, const codeunit_sequence_view& specification);
 }
 
@@ -265,6 +262,15 @@ template<>
 struct formatter<i32>
 {
     static codeunit_sequence format_argument(const i32& value, const codeunit_sequence_view& specification)
+    {
+        return details::format_integer(value, specification);
+    }
+};
+
+template<> 
+struct formatter<i64>
+{
+    static codeunit_sequence format_argument(const i64& value, const codeunit_sequence_view& specification)
     {
         return details::format_integer(value, specification);
     }
@@ -284,7 +290,34 @@ struct formatter<codeunit_sequence_view>
 {
     static codeunit_sequence format_argument(const codeunit_sequence_view& value, const codeunit_sequence_view& specification)
     {
-        return codeunit_sequence{ value };
+        return codeunit_sequence{value};
+    }
+};
+
+template<> 
+struct formatter<codeunit_sequence>
+{
+    static const codeunit_sequence& format_argument(const codeunit_sequence& value, const codeunit_sequence_view& specification)
+    {
+        return value;
+    }
+};
+
+template<>
+struct formatter<std::nullptr_t>
+{
+    static codeunit_sequence format_argument(std::nullptr_t, const codeunit_sequence_view& specification)
+    {
+        return codeunit_sequence{"nullptr"_cuqv};
+    }
+};
+
+template<class T> 
+struct formatter<T*>
+{
+    static codeunit_sequence format_argument(const T* value, const codeunit_sequence_view& specification)
+    {
+        return details::format_integer(reinterpret_cast<i64>(value), "#016x"_cuqv);
     }
 };
 
@@ -294,5 +327,25 @@ template<class Arg1, class...Args>
 format_error::format_error(const codeunit_sequence_view& message_format, Arg1&& arg1, Args&&...args)
     : std::runtime_error(format(message_format, arg1, args...).c_str())
 { }
+
+template <class T>
+codeunit_sequence formatter<T>::format_argument(const T& value, const codeunit_sequence_view& specification)
+{
+    constexpr i32 size = sizeof(T);
+    const auto reader = reinterpret_cast<const u8*>(&value);
+    codeunit_sequence raw;
+    for(i32 i = 0; i < size; ++i)
+    {
+        const u8 memory = reader[i];
+        raw += " "_cuqv;
+        raw += details::format_integer(memory, "02x"_cuqv);
+    }
+    
+    if(specification == "r"_cuqv)   // output raw memory bytes
+        return format("[Undefined type (raw:{})]"_cuqv, raw);
+
+    const codeunit_sequence message = format("Undefined format with raw memory bytes:{}!"_cuqv, raw);
+    throw format_error(message.view());
+}
 
 NS_EASY_END

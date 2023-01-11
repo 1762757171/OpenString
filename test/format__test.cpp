@@ -15,12 +15,16 @@ EXPECT_THROW({ try { \
 
 TEST(format, built_in_types)
 {
+    // Escape braces
     EXPECT_EQ("{}"_cuqv, format("{{}}"_cuqv));
 
+    // Integer
     EXPECT_EQ("0"_cuqv, format("{}"_cuqv, 0));
     EXPECT_EQ("00255"_txtv, format("{:05d}"_txtv, 255));
     EXPECT_EQ("ff"_cuqv, format("{:x}"_cuqv, 255));
+    EXPECT_EQ("0xff"_cuqv, format("{:#x}"_cuqv, 255));
 
+    // float
     EXPECT_EQ("3.14"_cuqv, format("{}"_cuqv, 3.14f));
     EXPECT_EQ("3.1"_cuqv, format("{:.1f}"_cuqv, 3.14f));
     EXPECT_EQ("3.14000"_cuqv, format("{:.5f}"_cuqv, 3.14f));
@@ -29,7 +33,25 @@ TEST(format, built_in_types)
     EXPECT_EQ("nan"_cuqv, format("{}"_cuqv, std::numeric_limits<float>::quiet_NaN()));
     EXPECT_THROW_WITH_MESSAGE(format("{:.10f}"_cuqv, 3.14f), format_error, "Too high precision for float [10]!");
 
+    // pointer
+    EXPECT_EQ("nullptr"_cuqv, format("{}"_cuqv, nullptr));
+    EXPECT_EQ("0x00000000075bcd15"_cuqv, format("{}"_cuqv, reinterpret_cast<void *>(123456789)));
+
+    // code unit sequence
     EXPECT_EQ("繁星明"_cuqv, format("繁{}明"_cuqv, "星"_cuqv));
+}
+
+TEST(format, undefined_type)
+{
+    struct test_struct
+    {
+        int a;
+        int b;
+    };
+    constexpr test_struct ts1 { 123456, 654321 };
+    EXPECT_THROW_WITH_MESSAGE(format("{}"_cuqv, ts1), format_error, "Undefined format with raw memory bytes: 40 e2 01 00 f1 fb 09 00!");
+    constexpr test_struct ts2 { 17627, 57171 };
+    EXPECT_EQ(format("{:r}"_cuqv, ts2), "[Undefined type (raw: db 44 00 00 53 df 00 00)]"_cuqv);
 }
 
 TEST(format, manual_index)
