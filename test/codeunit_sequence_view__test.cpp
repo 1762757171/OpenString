@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "codeunit_sequence_view.h"
+#include "text_view.h"
 
 using namespace easy;
 

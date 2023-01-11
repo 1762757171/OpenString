@@ -77,9 +77,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\adapters.h" />
-    <ClInclude Include="include\codepoint.h" />
-    <ClInclude Include="include\codeunit_sequence.h" />
-    <ClInclude Include="include\codeunit_sequence_view.h" />
     <ClInclude Include="include\definitions.h" />
     <ClInclude Include="include\format.h" />
     <ClInclude Include="include\index_interval.h" />
@@ -89,7 +86,6 @@
     <ClInclude Include="include\unicode.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\codeunit_sequence.cpp" />
     <ClCompile Include="source\text.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

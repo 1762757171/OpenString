@@ -1,7 +1,7 @@
 // ReSharper disable StringLiteralTypo
 #include "index_interval.h"
 #include "pch.h"
-#include "codeunit_sequence.h"
+#include "text.h"
 
 using namespace easy;
 
