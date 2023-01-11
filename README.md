@@ -2,10 +2,10 @@
   <h1>OpenString</h1>
     <div>
       <a href="https://github.com/1762757171/OpenString/actions/workflows/windows.yml">
-            <img src="https://github.com/1762757171/OpenString/actions/workflows/windows.yml/badge.svg" alt="ci-windows" />
+        <img src="https://github.com/1762757171/OpenString/actions/workflows/windows.yml/badge.svg" alt="ci-windows" />
       </a>
       <a>
-            <img src="https://img.shields.io/badge/progress-15%25-yellow" alt="progress" />
+        <img src="https://img.shields.io/badge/progress-15%25-yellow" alt="progress" />
       </a>
     </div>
 
