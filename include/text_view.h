@@ -115,8 +115,12 @@ public:
 		: codeunit_sequence_view(str, details::count_string_length(str))
 	{ }
 
+	explicit constexpr codeunit_sequence_view(const char& c) noexcept
+		: codeunit_sequence_view(&c, 1)
+	{ }
+
 	explicit constexpr codeunit_sequence_view(const codepoint& cp) noexcept
-		: codeunit_sequence_view(cp.data(), cp.size())
+		: codeunit_sequence_view(cp.raw(), cp.size())
 	{ }
 
 #pragma endregion constructors
@@ -134,11 +138,6 @@ public:
 		[[nodiscard]] constexpr const char& operator*() const noexcept
 		{
 			return *this->value;
-		}
-		
-		[[nodiscard]] constexpr const char* data() const noexcept
-		{
-			return this->value;
 		}
 
 		[[nodiscard]] constexpr std::ptrdiff_t operator-(const const_iterator& rhs) const noexcept
@@ -280,11 +279,6 @@ public:
 	[[nodiscard]] constexpr i32 size() const noexcept
 	{
 		return this->size_;
-	}
-
-	[[nodiscard]] constexpr const char* data() const noexcept
-	{
-		return this->data_;
 	}
 
 	[[nodiscard]] constexpr const char* c_str() const noexcept
@@ -556,7 +550,7 @@ public:
 		: view_(view)
 	{ }
 	constexpr text_view(const codepoint& cp) noexcept
-		: view_(cp.data(), cp.size())
+		: view_(cp.raw(), cp.size())
 	{ }
 
 	constexpr text_view& operator=(const char* str) noexcept
@@ -578,7 +572,7 @@ public:
 			: value(v)
 		{ }
 
-		[[nodiscard]] constexpr i32 size() const noexcept
+		[[nodiscard]] constexpr i32 raw_size() const noexcept
 		{
 			return unicode::parse_utf8_length(*this->value);
 		}
@@ -593,12 +587,7 @@ public:
 			return this->get_codepoint();
 		}
 		
-		[[nodiscard]] constexpr const char* data() const noexcept
-		{
-			return this->value;
-		}
-
-		constexpr i32 operator-(const const_iterator& rhs) const noexcept
+		[[nodiscard]] constexpr i32 operator-(const const_iterator& rhs) const noexcept
 		{
 			if(rhs > *this)
 				return - (rhs - *this);
@@ -631,14 +620,14 @@ public:
 			return this->operator+=(-diff);
 		}
 
-		constexpr const_iterator operator+(const i32 diff) const noexcept
+		[[nodiscard]] constexpr const_iterator operator+(const i32 diff) const noexcept
 		{
 			const_iterator tmp = *this;
 			tmp += diff;
 			return tmp;
 		}
 
-		constexpr const_iterator operator-(const i32 diff) const noexcept
+		[[nodiscard]] constexpr const_iterator operator-(const i32 diff) const noexcept
 		{
 			const_iterator tmp = *this;
 			tmp -= diff;
@@ -647,7 +636,7 @@ public:
 
 	    constexpr const_iterator& operator++() noexcept
 		{
-			this->value += this->size();
+			this->value += this->raw_size();
 			return *this;
 		}
 
@@ -661,7 +650,7 @@ public:
 		constexpr const_iterator& operator--() noexcept
 		{
 			--this->value;
-			while(this->size() == 0)
+			while(this->raw_size() == 0)
 				--this->value;
 			return *this;
 	    }
@@ -708,12 +697,12 @@ public:
 	
 	[[nodiscard]] constexpr const_iterator begin() const noexcept
 	{
-		return const_iterator{ this->view_.data() };
+		return const_iterator{ this->view_.c_str() };
 	}
 
 	[[nodiscard]] constexpr const_iterator end() const noexcept
 	{
-		return const_iterator{ this->view_.data() + this->view_.size() };
+		return const_iterator{ this->view_.c_str() + this->view_.size() };
 	}
 
 	[[nodiscard]] constexpr const_iterator cbegin() const noexcept
@@ -753,14 +742,14 @@ public:
 		return this->get_codepoint_index( this->view_.size() );
 	}
 
-	[[nodiscard]] constexpr codeunit_sequence_view data() const noexcept
+	[[nodiscard]] constexpr codeunit_sequence_view raw() const noexcept
 	{
 		return this->view_;
 	}
 
 	[[nodiscard]] constexpr const char* c_str() const noexcept
 	{
-		return this->data().c_str();
+		return this->raw().c_str();
 	}
 
 	/// @return Is this an empty string

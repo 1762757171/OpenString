@@ -155,7 +155,7 @@ struct codepoint
 			return *this->value;
 		}
 		
-		[[nodiscard]] constexpr const char* data() const noexcept
+		[[nodiscard]] constexpr const char* raw() const noexcept
 		{
 			return this->value;
 		}
@@ -301,7 +301,7 @@ struct codepoint
 		return !(*this == rhs);
 	}
 
-	[[nodiscard]] constexpr const char* data() const noexcept
+	[[nodiscard]] constexpr const char* raw() const noexcept
 	{
 		return this->sequence.data();
 	}

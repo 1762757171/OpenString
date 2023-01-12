@@ -41,11 +41,6 @@ char& codeunit_sequence::iterator::operator*() const noexcept
 	return *this->value;
 }
 
-char* codeunit_sequence::iterator::data() const noexcept
-{
-	return this->value;
-}
-
 std::ptrdiff_t codeunit_sequence::iterator::operator-(const iterator& rhs) const noexcept
 {
 	return this->value - rhs.value;
@@ -174,9 +169,11 @@ codeunit_sequence::codeunit_sequence(const i32 size) noexcept
 	if(size > SSO_SIZE_MAX)
 	{
 		const i32 memory_capacity = details::get_capacity(size + 1);
+		char* data = allocator<char>::allocate_array(memory_capacity);
+		data[0] = '\0';
 		this->as_norm().alloc = true;
 		this->as_norm().size = 0;
-		this->as_norm().data = allocator<char>::allocate_array(memory_capacity);
+		this->as_norm().data = data;
 		this->as_norm().capacity = memory_capacity - 1;
 	}
 }
@@ -199,9 +196,7 @@ codeunit_sequence& codeunit_sequence::operator=(const codeunit_sequence& other) 
 
 codeunit_sequence& codeunit_sequence::operator=(codeunit_sequence&& other) noexcept
 {
-	this->deallocate();
-	this->store_ = std::forward<std::array<u8, 16>>(other.store_);
-	other.store_.fill(0);
+	this->transfer_data(other);
 	return *this;
 }
 
@@ -225,7 +220,7 @@ codeunit_sequence::codeunit_sequence(const char* data, const i32 count) noexcept
 codeunit_sequence::codeunit_sequence(const codeunit_sequence_view sv) noexcept
 	: codeunit_sequence(sv.size())
 {
-	std::copy(sv.data(), sv.last(), this->data());
+	std::copy(sv.c_str(), sv.last(), this->data());
 	const i32 size = sv.size();
 	this->data()[size] = '\0';
 	this->set_size(size);
@@ -282,7 +277,7 @@ codeunit_sequence& codeunit_sequence::operator+=(const codeunit_sequence_view& r
 {
 	const i32 answer_size = this->size() + rhs.size();
 	this->reserve(answer_size);
-	std::copy(rhs.data(), rhs.last(), this->last());
+	std::copy_n(rhs.c_str(), rhs.size(), this->last());
 	this->data()[answer_size] = '\0';
 	this->set_size(answer_size);
 	return *this;
@@ -387,81 +382,61 @@ codeunit_sequence& codeunit_sequence::replace(const codeunit_sequence_view& sour
 			const i32 index = this->index_of(source, search_range);
 			if(index == index_invalid)
 				break;
-			std::copy(destination.data(), destination.last(), this->data() + index);
+			std::copy_n(destination.c_str(), destination.size(), this->data() + index);
 			search_range = selection.intersect({ '[', index + dest_size, '~' });
 		}
 	}
 	else if(per_delta < 0)
 	{
-		i32 found_index = this->index_of(source, selection);
-		i32 offset = 0;
-		for(i32 i = found_index; i <= answer_size; ++i)
+		index_interval search_range = selection;
+		i32 found_index = this->index_of(source, search_range);
+		i32 read_index = found_index;
+		i32 write_index = found_index;
+		while(true)
 		{
-			while(i + offset == found_index)
-			{
-				std::copy(destination.data(), destination.last(), this->data() + i);
-				i += dest_size;
-				offset -= per_delta;
-				const index_interval next_range = selection.intersect({ '[', i + offset, '~' });
-				found_index = this->index_of(source, next_range);
-			}
-			this->data()[i] = this->data()[i + offset];
+			std::copy_n(destination.c_str(), dest_size, this->data() + write_index);
+			read_index += src_size;
+			write_index += dest_size;
+			search_range = selection.intersect({ '[', found_index + src_size, '~' });
+			found_index = this->index_of(source, search_range);
+			if(found_index == index_invalid)
+				break;
+			const i32 copy_count = found_index - read_index;
+			std::copy_n(this->data() + read_index, copy_count, this->data() + write_index);
+			read_index = found_index;
+			write_index += copy_count;
 		}
+		std::copy(this->data() + read_index, this->last(), this->data() + write_index);
 		this->set_size(answer_size);
 	}
 	else
 	{
-		if(const i32 old_capacity = this->get_capacity(); old_capacity < answer_size)
+		codeunit_sequence result(answer_size);
+		const i32 prefix_size = selection.get_inclusive_min();
+		std::copy_n(this->data(), prefix_size, result.data());
+		
+		index_interval search_range = selection;
+		i32 found_index = this->index_of(source, search_range);
+		std::copy_n(this->data(), found_index, result.data());
+		i32 read_index = found_index;
+		i32 write_index = found_index;
+		while(true)
 		{
-			// Need re-allocation, replace when moving
-			const i32 memory_capacity = details::get_capacity(answer_size + 1);
-			const auto data = allocator<char>::allocate_array(memory_capacity);
-			
-			i32 found_index = this->index_of(source, selection);
-			i32 offset = 0;
-			for(i32 i = 0; i <= answer_size; ++i)
-			{
-				while(i + offset == found_index)
-				{
-					std::copy(destination.data(), destination.last(), data + i);
-					i += dest_size;
-					offset -= per_delta;
-					const index_interval next_range = selection.intersect({ '[', i + offset, '~' });
-					found_index = this->index_of(source, next_range);
-				}
-				data[i] = this->data()[i + offset];
-			}
-			
-			this->deallocate();
-			this->as_norm().alloc = true;
-			this->as_norm().size = answer_size;
-			this->as_norm().capacity = memory_capacity - 1;
-			this->as_norm().data = data;
+			std::copy_n(destination.c_str(), dest_size, result.data() + write_index);
+			read_index += src_size;
+			write_index += dest_size;
+			search_range = selection.intersect({ '[', found_index + src_size, '~' });
+			found_index = this->index_of(source, search_range);
+			if(found_index == index_invalid)
+				break;
+			const i32 copy_count = found_index - read_index;
+			std::copy_n(this->data() + read_index, copy_count, result.data() + write_index);
+			read_index = found_index;
+			write_index += copy_count;
 		}
-		else
-		{
-			// No re-allocation, replace in place from backward
-			
-			i32 found_index = this->last_index_of(source, selection) + src_size - 1;
-			i32 offset = whole_delta;
-			for(i32 i = answer_size; i >= 0; --i)
-			{
-				while(i - offset == found_index)
-				{
-					i -= dest_size;
-					std::copy(destination.data(), destination.last(), this->data() + i + 1);
-					offset -= per_delta;
-					if(offset != 0)
-					{
-						const index_interval next_range = selection.intersect({ '[', 0, i - offset, ']' });
-						found_index = this->last_index_of(source, next_range) + src_size - 1;
-					}
-				}
-				this->data()[i] = this->data()[i - offset];
-			}
-			
-			this->set_size(answer_size);
-		}
+		std::copy(this->data() + read_index, this->last(), result.data() + write_index);
+		result.set_size(answer_size);
+		this->transfer_data(result);
 	}
 	
 	return *this;
@@ -480,7 +455,7 @@ codeunit_sequence& codeunit_sequence::replace(const index_interval& range, const
 	{
 		// Simply assignment
 		for(i32 i = 0; i < destination.size(); ++i)
-			this->data()[selection.get_inclusive_min() + i] = destination.data()[i];
+			this->data()[selection.get_inclusive_min() + i] = destination.c_str()[i];
 		if (delta != 0)
 		{
 			const index_interval source_suffix = index_interval { '[', selection.get_exclusive_max(), '~' }.select(self_size);
@@ -492,7 +467,21 @@ codeunit_sequence& codeunit_sequence::replace(const index_interval& range, const
 	}
 	else
 	{
-		// TODO
+		codeunit_sequence result(answer_size);
+		const i32 prefix_size = selection.get_inclusive_min();
+		const char* start = this->data();
+		char* target = result.data();
+		std::copy_n(start, prefix_size, target);
+		start += prefix_size;
+		target += prefix_size;
+		const i32 dest_size = destination.size();
+		std::copy_n(destination.c_str(), dest_size, target);
+		start += selection.size();
+		target += dest_size;
+		const i32 suffix_size = self_size - selection.get_exclusive_max() + 1;
+		std::copy_n(start, suffix_size, target);
+		result.set_size(answer_size);
+		this->transfer_data(result);
 	}
 
 	return *this;
@@ -561,15 +550,11 @@ void codeunit_sequence::reserve(const i32 size)
 {
 	if(size <= this->get_capacity())
 		return;
-	const i32 memory_capacity = details::get_capacity(size + 1);
-	const auto data = allocator<char>::allocate_array(memory_capacity);
-	const i32 old_size = this->size();
-	std::copy(this->data(), this->last(), data);
-	this->deallocate();
-	this->as_norm().alloc = true;
-	this->as_norm().size = old_size;
-	this->as_norm().capacity = memory_capacity - 1;
-	this->as_norm().data = data;
+	codeunit_sequence result(size);
+	const i32 self_size = this->size();
+	std::copy_n(this->data(), self_size + 1, result.data());
+	result.set_size(self_size);
+	this->transfer_data(result);
 }
 
 void codeunit_sequence::write_at(const i32 index, const char codeunit) noexcept
@@ -759,9 +744,16 @@ void codeunit_sequence::deallocate()
 		allocator<char>::deallocate_array( this->as_norm().data );
 }
 
-void codeunit_sequence::set_size(i32 size)
+void codeunit_sequence::set_size(const i32 size)
 {
 	if(this->is_short()) this->as_sso().size = static_cast<u8>(size); else this->as_norm().size = size;
+}
+
+void codeunit_sequence::transfer_data(codeunit_sequence& other)
+{
+	std::swap(this->store_, other.store_);
+	other.data()[0] = '\0';
+	other.set_size(0);
 }
 
 bool operator==(const codeunit_sequence_view& lhs, const codeunit_sequence& rhs) noexcept
@@ -782,7 +774,7 @@ text::text(const char* str) noexcept
 { }
 
 text::text(const text_view view) noexcept
-	: sequence_(view.data())
+	: sequence_(view.raw())
 { }
 
 text::text(codeunit_sequence sequence) noexcept
@@ -817,9 +809,138 @@ text text::from_utf32(const char32_t* str) noexcept
 	return { std::move(sequence) };
 }
 
+text::iterator::iterator(text& t, const index_interval& r) noexcept
+	: sequence_range(r)
+	, owner(&t)
+{ }
+
+text::iterator::codepoint_accessor::codepoint_accessor(iterator& iter) noexcept
+	: it_(iter)
+{ }
+
+text::iterator::codepoint_accessor& text::iterator::codepoint_accessor::operator=(const char c) noexcept
+{
+	return *this = codepoint{ c };
+}
+
+text::iterator::codepoint_accessor& text::iterator::codepoint_accessor::operator=(const char32_t cp) noexcept
+{
+	return *this = codepoint{ cp };
+}
+
+text::iterator::codepoint_accessor& text::iterator::codepoint_accessor::operator=(const codepoint& cp) noexcept
+{
+	this->assign(codeunit_sequence_view{ cp });
+	return *this;
+}
+
+text::iterator::codepoint_accessor& text::iterator::codepoint_accessor::operator=(const text_view& tv) noexcept
+{
+	this->assign(tv.raw());
+	return *this;
+}
+
+text::iterator::codepoint_accessor& text::iterator::codepoint_accessor::operator=(const text& t) noexcept
+{
+	return *this = t.view();
+}
+
+codepoint text::iterator::codepoint_accessor::get_codepoint() const noexcept
+{
+	return it_.get_codepoint();
+}
+
+text::iterator::codepoint_accessor::operator codepoint() const noexcept
+{
+	return this->get_codepoint();
+}
+
+void text::iterator::codepoint_accessor::assign(const codeunit_sequence_view& sequence_view) const noexcept
+{
+	it_.owner->sequence_.replace(it_.sequence_range, sequence_view);
+	const i32 origin_start = it_.sequence_range.get_inclusive_min();
+	it_.sequence_range = { '[', origin_start, origin_start + sequence_view.size(), ')' };
+}
+
+i32 text::iterator::raw_size() const noexcept
+{
+	return this->sequence_range.size();
+}
+
+codepoint text::iterator::get_codepoint() const noexcept
+{
+	return codepoint{ this->owner->sequence_.subview( this->sequence_range ).c_str(), this->sequence_range.size() };
+}
+
+codepoint text::iterator::operator*() const noexcept
+{
+	return this->get_codepoint();
+}
+
+text::iterator::codepoint_accessor text::iterator::operator*() noexcept
+{
+	return codepoint_accessor{ *this };
+}
+
+text::iterator& text::iterator::operator++() noexcept
+{
+	const i32 next_start = this->sequence_range.get_exclusive_max();
+	const char c = this->owner->sequence_[next_start];
+	const i32 size = unicode::parse_utf8_length(c);
+	this->sequence_range = { '[', next_start, next_start + size, ')' };
+	return *this;
+}
+
+text::iterator text::iterator::operator++(int) noexcept
+{
+	const iterator tmp = *this;
+	++*this;
+	return tmp;
+}
+
+text::iterator& text::iterator::operator--() noexcept
+{
+	i32 prev_start = this->sequence_range.get_inclusive_min();
+	i32 size = 0;
+	while(size == 0)
+	{
+		--prev_start;
+		size = unicode::parse_utf8_length(this->owner->sequence_[prev_start]);
+	}
+	this->sequence_range = { '[', prev_start, prev_start + size, ')' };
+	return *this;
+}
+
+text::iterator text::iterator::operator--(int) noexcept
+{
+	const iterator tmp = *this;
+	--*this;
+	return tmp;
+}
+
+bool text::iterator::operator==(const iterator& rhs) const noexcept
+{
+	return this->owner == rhs.owner && this->sequence_range == rhs.sequence_range;
+}
+
+bool text::iterator::operator!=(const iterator& rhs) const noexcept
+{
+	return !(*this == rhs);
+}
+
+text::iterator text::begin() noexcept
+{
+	return iterator{ *this, { '[', 0, this->cbegin().raw_size(), ')' } };
+}
+
 text::const_iterator text::begin() const noexcept
 {
 	return this->view().begin();
+}
+
+text::iterator text::end() noexcept
+{
+	return iterator{ *this, index_interval::empty() };
 }
 
 text::const_iterator text::end() const noexcept
@@ -839,7 +960,7 @@ text::const_iterator text::cend() const noexcept
 
 text_view text::view() const noexcept
 {
-	return text_view(this->sequence_.view());
+	return this->sequence_.view();
 }
 
 i32 text::size() const noexcept
@@ -884,7 +1005,7 @@ bool text::operator!=(const char* rhs) const noexcept
 
 text& text::operator+=(const text_view& rhs) noexcept
 {
-	this->sequence_ += rhs.data();
+	this->sequence_ += rhs.raw();
 	return *this;
 }
 
@@ -1004,26 +1125,26 @@ u32 text::split(const text_view& splitter, std::vector<text_view>& pieces, const
 text& text::replace(const text_view& source, const text_view& destination, const index_interval& range)
 {
 	const index_interval codeunit_range = this->view().get_codeunit_range(range);
-	this->sequence_.replace(source.data(), destination.data(), codeunit_range);
+	this->sequence_.replace(source.raw(), destination.raw(), codeunit_range);
 	return *this;
 }
 
 text& text::replace(const index_interval& range, const text_view& destination)
 {
 	const index_interval codeunit_range = this->view().get_codeunit_range(range);
-	this->sequence_.replace(codeunit_range, destination.data());
+	this->sequence_.replace(codeunit_range, destination.raw());
 	return *this;
 }
 
 text& text::self_remove_prefix(const text_view& prefix) noexcept
 {
-	this->sequence_.self_remove_prefix(prefix.data());
+	this->sequence_.self_remove_prefix(prefix.raw());
 	return *this;
 }
 
 text& text::self_remove_suffix(const text_view& suffix) noexcept
 {
-	this->sequence_.self_remove_suffix(suffix.data());
+	this->sequence_.self_remove_suffix(suffix.raw());
 	return *this;
 }
 
@@ -1046,7 +1167,7 @@ text& text::self_trim_start(const text_view& characters) noexcept
 	{
 		if(!characters.contains(it.get_codepoint()))
 			break;
-		codeunit_index += it.size();
+		codeunit_index += it.raw_size();
 	}
 	this->sequence_.subsequence({ '[', codeunit_index, '~' });
 	return *this;
@@ -1063,7 +1184,7 @@ text& text::self_trim_end(const text_view& characters) noexcept
 		--it;
 		if(!characters.contains(it.get_codepoint()))
 			break;
-		codeunit_index -= it.size();
+		codeunit_index -= it.raw_size();
 		if(it == this->cbegin())
 			break;
 	}

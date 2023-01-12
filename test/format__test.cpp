@@ -38,7 +38,7 @@ TEST(format, built_in_types)
     EXPECT_EQ("0x00000000075bcd15"_cuqv, format("{}"_cuqv, reinterpret_cast<void *>(123456789)));
 
     // code unit sequence
-    EXPECT_EQ("繁星明"_cuqv, format("繁{}明"_cuqv, "星"_cuqv));
+    EXPECT_EQ("繁星明 😀"_cuqv, format("繁{}明{}"_cuqv, "星"_cuqv, codeunit_sequence(" 😀")));
 }
 
 TEST(format, undefined_type)

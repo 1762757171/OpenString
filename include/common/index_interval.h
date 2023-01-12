@@ -26,7 +26,7 @@ public:
 		inclusion type;
 		i32 value;
 
-		constexpr bound(const enum inclusion t, const i32 v) noexcept
+		constexpr bound(const inclusion t, const i32 v) noexcept
 			: type(t)
 			, value(v)
 		{ }
@@ -112,11 +112,6 @@ public:
 		{ }
 
 		[[nodiscard]] constexpr i32 operator*() const noexcept
-		{
-			return this->value;
-		}
-		
-		[[nodiscard]] constexpr i32 data() const noexcept
 		{
 			return this->value;
 		}

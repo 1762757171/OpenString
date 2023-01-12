@@ -284,7 +284,6 @@ TEST(codeunit_sequence, replace)
 	}
 	// greater size
 	{
-		// Need re-allocation
 		{
 			{
 				codeunit_sequence cuq("abbabbabbabbab");
@@ -297,7 +296,6 @@ TEST(codeunit_sequence, replace)
 				EXPECT_EQ(cuq.replace("b"_cuqv, "aabb"_cuqv, { '[', 6, 100, ')' }), "abbabbaaaabbaabbaabbaaabbaabbaaabb"_cuqv);
 			}
 		}
-		// Needn't re-allocation
 		{
 			{
 				codeunit_sequence cuq("This is a long string.");

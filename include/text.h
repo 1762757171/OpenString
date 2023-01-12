@@ -46,7 +46,6 @@ public:
 		iterator() noexcept;
 		explicit iterator(char* v) noexcept;
 		[[nodiscard]] char& operator*() const noexcept;
-		[[nodiscard]] char* data() const noexcept;
 		[[nodiscard]] std::ptrdiff_t operator-(const iterator& rhs) const noexcept;
 		iterator& operator+=(std::ptrdiff_t diff) noexcept;
 		iterator& operator-=(std::ptrdiff_t diff) noexcept;
@@ -110,7 +109,7 @@ public:
 	/**
 	 * Append a codeunit sequence back.
 	 * @return ref of this codeunit sequence.
-	 * @todo Think: Is operators overload needed? It's costly for compiler.
+	 * @todo Think: Is operator+= overload needed? It's costly for compiler.
 	 */
 	codeunit_sequence& append(i32 count, char codeunit = '\0') noexcept;
 
@@ -244,6 +243,8 @@ private:
 
 	void set_size(i32 size);
 
+	void transfer_data(codeunit_sequence& other);
+
 	std::array<u8, 16> store_;
 };
 
@@ -295,7 +296,42 @@ public:
 
 	struct iterator
 	{
+		iterator() noexcept = default;
+		iterator(text& t, const index_interval& r) noexcept;
 
+		struct codepoint_accessor
+		{
+			explicit codepoint_accessor(iterator& iter) noexcept;
+			
+			codepoint_accessor& operator=(char c) noexcept;
+			codepoint_accessor& operator=(char32_t cp) noexcept;
+			codepoint_accessor& operator=(const codepoint& cp) noexcept;
+			codepoint_accessor& operator=(const text_view& tv) noexcept;
+			codepoint_accessor& operator=(const text& t) noexcept;
+
+			[[nodiscard]] codepoint get_codepoint() const noexcept;
+			[[nodiscard]] operator codepoint() const noexcept;
+
+		private:
+			
+			void assign(const codeunit_sequence_view& sequence_view) const noexcept;
+			
+			iterator& it_;
+		};
+
+		[[nodiscard]] i32 raw_size() const noexcept;
+		[[nodiscard]] codepoint get_codepoint() const noexcept;
+		[[nodiscard]] codepoint operator*() const noexcept;
+		[[nodiscard]] codepoint_accessor operator*() noexcept;
+		iterator& operator++() noexcept;
+		iterator operator++(int) noexcept;
+		iterator& operator--() noexcept;
+		iterator operator--(int) noexcept;
+		[[nodiscard]] bool operator==(const iterator& rhs) const noexcept;
+		[[nodiscard]] bool operator!=(const iterator& rhs) const noexcept;
+
+		index_interval sequence_range = index_interval::empty();
+		text* owner = nullptr;
 	};
 	
 	[[nodiscard]] iterator begin() noexcept;

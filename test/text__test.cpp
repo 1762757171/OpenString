@@ -55,6 +55,30 @@ TEST(text, replace)
 		t.write_at(2, 'a'_cp);
 		EXPECT_EQ(t, "你好a😙你"_txtv);
 	}
+	{
+		const text t("0123456789");
+		i32 n = 0;
+		for(const auto cp : t)
+		{
+			EXPECT_EQ(cp.size(), 1);
+			EXPECT_EQ(n, cp.get_codepoint() - U'0');
+			++n;
+		}
+	}
+	{
+		text t("0123456789");
+		i32 n = 0;
+		for(auto cp : t)
+		{
+			if(n == 6)
+			{
+				cp = "你好😀"_txtv;
+				break;
+			}
+			++n;
+		}
+		EXPECT_EQ(t, "012345你好😀789"_txtv);
+	}
 }
 
 TEST(text, remove_prefix_suffix)

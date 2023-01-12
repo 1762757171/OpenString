@@ -44,7 +44,7 @@ namespace details
         { }
 
         explicit constexpr format_view(const text_view& format) noexcept
-            : format_(format.data())
+            : format_(format.raw())
         { }
 
     #pragma endregion constructors
@@ -217,7 +217,7 @@ namespace details
                 {
                     if(next_index > 0)
                         throw format_error("Automatic index is not allowed mixing with manual index!"_cuqv);
-                    const auto [ last, error ] = std::from_chars(index_run.data(), index_run.last(), current_index);
+                    const auto [ last, error ] = std::from_chars(index_run.c_str(), index_run.last(), current_index);
                     if(last != index_run.last())
                         throw format_error("Invalid format index [{}]!"_cuqv, index_run);
                     next_index = manual_index;
