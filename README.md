@@ -7,10 +7,13 @@
       <a>
         <img src="https://img.shields.io/badge/progress-15%25-yellow" alt="progress" />
       </a>
+      <br/>
+      <a href="https://github.com/1762757171/OpenString/blob/master/README_ZH.md">
+        <img src="https://img.shields.io/badge/docs-%E4%B8%AD%E6%96%87-informational" alt="docs-ZH" />
+      </a>
     </div>
 
   <b>A modern user-friendly string library for game developing</b><br/>
-  <a href="https://github.com/1762757171/OpenString/blob/master/README_ZH.md">中文</a><br/>
 </div>
 
 ## License
