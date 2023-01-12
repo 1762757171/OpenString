@@ -273,7 +273,7 @@ bool codeunit_sequence::operator!=(const char* rhs) const noexcept
 	return this->view() != codeunit_sequence_view(rhs);
 }
 
-codeunit_sequence& codeunit_sequence::operator+=(const codeunit_sequence_view& rhs) noexcept
+codeunit_sequence& codeunit_sequence::append(const codeunit_sequence_view& rhs) noexcept
 {
 	const i32 answer_size = this->size() + rhs.size();
 	this->reserve(answer_size);
@@ -283,7 +283,22 @@ codeunit_sequence& codeunit_sequence::operator+=(const codeunit_sequence_view& r
 	return *this;
 }
 
-codeunit_sequence& codeunit_sequence::append(const i32 count, const char codeunit) noexcept
+codeunit_sequence& codeunit_sequence::append(const codeunit_sequence& rhs) noexcept
+{
+	return this->append(rhs.view());
+}
+
+codeunit_sequence& codeunit_sequence::append(const codepoint& cp) noexcept
+{
+	return this->append(codeunit_sequence_view{ cp });
+}
+
+codeunit_sequence& codeunit_sequence::append(const char* rhs) noexcept
+{
+	return this->append(codeunit_sequence_view{ rhs });
+}
+
+codeunit_sequence& codeunit_sequence::append(const char codeunit, const i32 count) noexcept
 {
 	const i32 old_size = this->size();
 	const i32 answer_size = old_size + count;
@@ -295,37 +310,29 @@ codeunit_sequence& codeunit_sequence::append(const i32 count, const char codeuni
 	return *this;
 }
 
+codeunit_sequence& codeunit_sequence::operator+=(const codeunit_sequence_view& rhs) noexcept
+{
+	return this->append(rhs);
+}
+
 codeunit_sequence& codeunit_sequence::operator+=(const codeunit_sequence& rhs) noexcept
 {
-	return this->operator+=(rhs.view());
+	return this->append(rhs);
 }
 
 codeunit_sequence& codeunit_sequence::operator+=(const codepoint& cp) noexcept
 {
-	return this->operator+=(codeunit_sequence_view(cp));
+	return this->append(cp);
 }
 
 codeunit_sequence& codeunit_sequence::operator+=(const char* rhs) noexcept
 {
-	return this->operator+=(codeunit_sequence_view(rhs));
+	return this->append(rhs);
 }
 
 codeunit_sequence& codeunit_sequence::operator+=(const char codeunit) noexcept
 {
-	*this += codeunit_sequence_view(&codeunit, 1);
-	return *this;
-}
-
-codeunit_sequence codeunit_sequence::operator+(codeunit_sequence_view rhs) const noexcept
-{
-	codeunit_sequence str = *this;
-	str += rhs;
-	return str;
-}
-
-codeunit_sequence codeunit_sequence::operator+(const codeunit_sequence& rhs) const noexcept
-{
-	return this->operator+(rhs.view());
+	return this->append(codeunit);
 }
 
 codeunit_sequence_view codeunit_sequence::subview(const index_interval& range) const noexcept
@@ -958,6 +965,16 @@ text::const_iterator text::cend() const noexcept
 	return this->view().cend();
 }
 
+codeunit_sequence text::raw() && noexcept
+{
+	return std::forward<codeunit_sequence>(this->sequence_);
+}
+
+const codeunit_sequence& text::raw() const& noexcept
+{
+	return this->sequence_;
+}
+
 text_view text::view() const noexcept
 {
 	return this->sequence_.view();
@@ -1003,15 +1020,58 @@ bool text::operator!=(const char* rhs) const noexcept
 	return this->view() != rhs;
 }
 
+text& text::append(const text_view& rhs) noexcept
+{
+	this->sequence_.append(rhs.raw());
+	return *this;
+}
+
+text& text::append(const text& rhs) noexcept
+{
+	return this->append(rhs.view());
+}
+
+text& text::append(const codepoint& cp) noexcept
+{
+	this->sequence_.append(cp);
+	return *this;
+}
+
+text& text::append(const char* rhs) noexcept
+{
+	this->sequence_.append(rhs);
+	return *this;
+}
+
+text& text::append(const char codeunit, const i32 count) noexcept
+{
+	this->sequence_.append(codeunit, count);
+	return *this;
+}
+
 text& text::operator+=(const text_view& rhs) noexcept
 {
-	this->sequence_ += rhs.raw();
-	return *this;
+	return this->append(rhs);
 }
 
 text& text::operator+=(const text& rhs) noexcept
 {
-	return this->operator+=(rhs.view());
+	return this->append(rhs);
+}
+
+text& text::operator+=(const codepoint& cp) noexcept
+{
+	return this->append(cp);
+}
+
+text& text::operator+=(const char* rhs) noexcept
+{
+	return this->append(rhs);
+}
+
+text& text::operator+=(const char codeunit) noexcept
+{
+	return this->append(codeunit);
 }
 
 text_view text::subview(const index_interval& range) const noexcept
@@ -1225,6 +1285,74 @@ const char* text::c_str() const noexcept
 bool operator==(const text_view& lhs, const text& rhs) noexcept
 {
 	return rhs == lhs;
+}
+
+concatenation_builder::concatenation_builder() noexcept
+{
+	this->sequences.reserve(16);
+}
+
+concatenation_builder::concatenation_builder(concatenation_builder&& other) noexcept
+	: sequences(std::forward<std::vector<codeunit_sequence>>(other.sequences))
+{ }
+
+concatenation_builder::~concatenation_builder() noexcept = default;
+
+concatenation_builder concatenation_builder::operator+(const char* str) && noexcept
+{
+	this->sequences.emplace_back(str);
+	return std::forward<concatenation_builder>(*this);
+}
+
+concatenation_builder concatenation_builder::operator+(codeunit_sequence_view rhs) && noexcept
+{
+	this->sequences.emplace_back(rhs);
+	return std::forward<concatenation_builder>(*this);
+}
+
+concatenation_builder concatenation_builder::operator+(const codeunit_sequence& rhs) && noexcept
+{
+	this->sequences.push_back(rhs);
+	return std::forward<concatenation_builder>(*this);
+}
+
+concatenation_builder concatenation_builder::operator+(codeunit_sequence&& rhs) && noexcept
+{
+	this->sequences.push_back(std::forward<codeunit_sequence>(rhs));
+	return std::forward<concatenation_builder>(*this);
+}
+
+concatenation_builder concatenation_builder::operator+(const text_view rhs) && noexcept
+{
+	this->sequences.emplace_back(rhs.raw());
+	return std::forward<concatenation_builder>(*this);
+}
+
+concatenation_builder concatenation_builder::operator+(const text& rhs) && noexcept
+{
+	this->sequences.push_back(rhs.raw());
+	return std::forward<concatenation_builder>(*this);
+}
+
+concatenation_builder concatenation_builder::operator+(text&& rhs) && noexcept
+{
+	this->sequences.push_back(std::forward<text>(rhs).raw());
+	return std::forward<concatenation_builder>(*this);
+}
+
+codeunit_sequence concatenation_builder::build_sequence() const && noexcept
+{
+	return codeunit_sequence::join(this->sequences, { });
+}
+
+concatenation_builder::operator codeunit_sequence() const && noexcept
+{
+	return std::forward<const concatenation_builder>(*this).build_sequence();
+}
+
+concatenation_builder::operator text() const && noexcept
+{
+	return { std::forward<const concatenation_builder>(*this).build_sequence() };
 }
 
 NS_EASY_END

@@ -66,16 +66,15 @@ TEST(codeunit_sequence, construct)
 	EXPECT_EQ(20, cuq_ctor_long.size());
 }
 
-TEST(codeunit_sequence, combination)
+TEST(codeunit_sequence, concatenate)
 {
 	{
 		constexpr char code_unit_array_wo[] = { '\xe6', '\x88', '\x91', '\0' };
 		const codeunit_sequence cuq_wo(code_unit_array_wo);
 		const codeunit_sequence cuq_ai("😘");
-		const codeunit_sequence cuq_ni("ni");
 
-		const codeunit_sequence combine = cuq_wo + cuq_ai + cuq_ai + cuq_ni;
-		const codeunit_sequence correct("我😘😘ni");
+		const codeunit_sequence combine = cuq_wo + cuq_ai + cuq_ai + codeunit_sequence("あなた") + "!"_cuqv;
+		const codeunit_sequence correct("我😘😘あなた!");
 
 		EXPECT_EQ(combine, correct);
 	}

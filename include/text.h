@@ -109,25 +109,18 @@ public:
 	/**
 	 * Append a codeunit sequence back.
 	 * @return ref of this codeunit sequence.
-	 * @todo Think: Is operator+= overload needed? It's costly for compiler.
 	 */
-	codeunit_sequence& append(i32 count, char codeunit = '\0') noexcept;
+	codeunit_sequence& append(const codeunit_sequence_view& rhs) noexcept;
+	codeunit_sequence& append(const codeunit_sequence& rhs) noexcept;
+	codeunit_sequence& append(const codepoint& cp) noexcept;
+	codeunit_sequence& append(const char* rhs) noexcept;
+	codeunit_sequence& append(char codeunit, i32 count = 1) noexcept;
 
 	codeunit_sequence& operator+=(const codeunit_sequence_view& rhs) noexcept;
 	codeunit_sequence& operator+=(const codeunit_sequence& rhs) noexcept;
 	codeunit_sequence& operator+=(const codepoint& cp) noexcept;
 	codeunit_sequence& operator+=(const char* rhs) noexcept;
 	codeunit_sequence& operator+=(char codeunit) noexcept;
-
-	/**
-	 * Return a new codeunit sequence which concatenate two codeunit sequences.
-	 * This will cause multiple memory allocations.
-	 * Consider using format if you want to concatenate multiple codeunit sequences.
-	 * @param rhs Another codeunit sequence which should be appended to this
-	 * @return Get a new codeunit sequence instance which append a codeunit sequence back this codeunit sequence.
-	 */
-	[[nodiscard]] codeunit_sequence operator+(codeunit_sequence_view rhs) const noexcept;
-	[[nodiscard]] codeunit_sequence operator+(const codeunit_sequence& rhs) const noexcept;
 
 	[[nodiscard]] codeunit_sequence_view subview(const index_interval& range) const noexcept;
 
@@ -276,12 +269,10 @@ public:
 
 	~text();
 
-	// ReSharper disable CppNonExplicitConvertingConstructor
 	text(const char* str) noexcept;
 	text(text_view view) noexcept;
 	text(codeunit_sequence sequence) noexcept;
 	text(codeunit_sequence_view sequence) noexcept;
-	// ReSharper restore CppNonExplicitConvertingConstructor
 
 	static text from_utf8(const char* str) noexcept;
 	static text from_utf16(const char16_t* str) noexcept;
@@ -343,6 +334,9 @@ public:
 
 #pragma endregion iterator
 
+	[[nodiscard]] codeunit_sequence raw() && noexcept;
+	[[nodiscard]] const codeunit_sequence& raw() const& noexcept;
+	
 	[[nodiscard]] text_view view() const noexcept;
 
 	[[nodiscard]] i32 size() const noexcept;
@@ -355,9 +349,18 @@ public:
 	[[nodiscard]] bool operator!=(const text& rhs) const noexcept;
 	[[nodiscard]] bool operator!=(const char* rhs) const noexcept;
 
+	text& append(const text_view& rhs) noexcept;
+	text& append(const text& rhs) noexcept;
+	text& append(const codepoint& cp) noexcept;
+	text& append(const char* rhs) noexcept;
+	text& append(char codeunit, i32 count = 1) noexcept;
+
 	text& operator+=(const text_view& rhs) noexcept;
 	text& operator+=(const text& rhs) noexcept;
-
+	text& operator+=(const codepoint& cp) noexcept;
+	text& operator+=(const char* rhs) noexcept;
+	text& operator+=(char codeunit) noexcept;
+	
 	[[nodiscard]] text_view subview(const index_interval& range) const noexcept;
 
 	text& subtext(const index_interval& range) noexcept;
@@ -417,7 +420,7 @@ template<typename Container>
 text text::join(const Container& container, const text_view& separator) noexcept
 {
 	text result;
-	for (const auto it : container)
+	for (const auto& it : container)
 	{
 		if(!result.is_empty())
 			result += separator;
@@ -427,5 +430,40 @@ text text::join(const Container& container, const text_view& separator) noexcept
 }
 
 [[nodiscard]] bool operator==(const text_view& lhs, const text& rhs) noexcept;
+
+#pragma region concatenate
+
+struct concatenation_builder
+{
+	concatenation_builder() noexcept;
+	concatenation_builder(concatenation_builder&& other) noexcept;
+	concatenation_builder(const concatenation_builder& other) noexcept = delete;
+	concatenation_builder& operator=(concatenation_builder&& other) noexcept = delete;
+	concatenation_builder& operator=(const concatenation_builder& other) noexcept = delete;
+	~concatenation_builder() noexcept;
+		
+	[[nodiscard]] concatenation_builder operator+(const char* str) && noexcept;
+	[[nodiscard]] concatenation_builder operator+(codeunit_sequence_view rhs) && noexcept;
+	[[nodiscard]] concatenation_builder operator+(const codeunit_sequence& rhs) && noexcept;
+	[[nodiscard]] concatenation_builder operator+(codeunit_sequence&& rhs) && noexcept;
+	[[nodiscard]] concatenation_builder operator+(text_view rhs) && noexcept;
+	[[nodiscard]] concatenation_builder operator+(const text& rhs) && noexcept;
+	[[nodiscard]] concatenation_builder operator+(text&& rhs) && noexcept;
+
+	[[nodiscard]] codeunit_sequence build_sequence() const && noexcept;
+	[[nodiscard]] operator codeunit_sequence() const && noexcept;
+	[[nodiscard]] operator text() const && noexcept;
+	
+	std::vector<codeunit_sequence> sequences;
+};
+
+template<class T1, class T2,
+	typename = decltype(text{ std::declval<T1>() }), typename = decltype(text{ std::declval<T2>() })>
+[[nodiscard]] concatenation_builder operator+(T1&& lhs, T2&& rhs) noexcept
+{
+	return concatenation_builder{ } + std::forward<T1>(lhs) + std::forward<T2>(rhs);
+}
+
+#pragma endregion concatenate
 
 NS_EASY_END
