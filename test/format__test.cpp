@@ -15,10 +15,10 @@ EXPECT_THROW({ try { \
 
 TEST(format, built_in_types)
 {
-    // Escape braces
+    // escaped braces
     EXPECT_EQ("{}"_cuqv, format("{{}}"_cuqv));
 
-    // Integer
+    // integer
     EXPECT_EQ("0"_cuqv, format("{}"_cuqv, 0));
     EXPECT_EQ("00255"_txtv, format("{:05d}"_txtv, 255));
     EXPECT_EQ("ff"_cuqv, format("{:x}"_cuqv, 255));
@@ -32,6 +32,11 @@ TEST(format, built_in_types)
     EXPECT_EQ("-inf"_txtv, format("{}"_txtv, -std::numeric_limits<float>::infinity()));
     EXPECT_EQ("nan"_cuqv, format("{}"_cuqv, std::numeric_limits<float>::quiet_NaN()));
     EXPECT_THROW_WITH_MESSAGE(format("{:.10f}"_cuqv, 3.14f), format_error, "Too high precision for float [10]!");
+
+    // index interval
+    EXPECT_EQ("∅"_txtv, format("{}", index_interval::empty()));
+    EXPECT_EQ("(-∞,20)"_txtv, format("{}", index_interval{ '~', 20, ')' }));
+    EXPECT_EQ("(-∞,+∞)"_txtv, format("{}", index_interval::all()));
 
     // pointer
     EXPECT_EQ("nullptr"_cuqv, format("{}"_cuqv, nullptr));

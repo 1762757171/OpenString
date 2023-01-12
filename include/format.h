@@ -286,6 +286,49 @@ struct formatter<float>
 };
 
 template<> 
+struct formatter<index_interval>
+{
+    static codeunit_sequence format_argument(const index_interval& value, const codeunit_sequence_view& specification)
+    {
+        if(value.is_empty())
+            return codeunit_sequence{ "∅"_cuqv };
+        const index_interval::bound lower = value.get_lower_bound();
+        codeunit_sequence lower_part;
+        switch(lower.type)
+        {
+        case index_interval::bound::inclusion::inclusive:
+            lower_part = "["_cuqv;
+            lower_part += details::format_integer(lower.value, { });
+            break;
+        case index_interval::bound::inclusion::exclusive:
+            lower_part = "("_cuqv;
+            lower_part += details::format_integer(lower.value, { });
+            break;
+        case index_interval::bound::inclusion::infinity:
+            lower_part = "(-∞"_cuqv;
+            break;
+        }
+        const index_interval::bound upper = value.get_upper_bound();
+        codeunit_sequence upper_part;
+        switch(upper.type)
+        {
+        case index_interval::bound::inclusion::inclusive:
+            upper_part = details::format_integer(upper.value, { });
+            upper_part += "]"_cuqv;
+            break;
+        case index_interval::bound::inclusion::exclusive:
+            upper_part = details::format_integer(upper.value, { });
+            upper_part += ")"_cuqv;
+            break;
+        case index_interval::bound::inclusion::infinity:
+            upper_part = "+∞)"_cuqv;
+            break;
+        }
+        return format("{},{}"_cuqv, lower_part, upper_part);
+    }
+};
+
+template<> 
 struct formatter<codeunit_sequence_view>
 {
     static codeunit_sequence format_argument(const codeunit_sequence_view& value, const codeunit_sequence_view& specification)
@@ -300,6 +343,24 @@ struct formatter<codeunit_sequence>
     static const codeunit_sequence& format_argument(const codeunit_sequence& value, const codeunit_sequence_view& specification)
     {
         return value;
+    }
+};
+
+template<> 
+struct formatter<text_view>
+{
+    static codeunit_sequence format_argument(const text_view& value, const codeunit_sequence_view& specification)
+    {
+        return codeunit_sequence{ value.raw() };
+    }
+};
+
+template<> 
+struct formatter<text>
+{
+    static codeunit_sequence format_argument(const text& value, const codeunit_sequence_view& specification)
+    {
+        return value.raw();
     }
 };
 

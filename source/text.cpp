@@ -200,6 +200,13 @@ codeunit_sequence& codeunit_sequence::operator=(codeunit_sequence&& other) noexc
 	return *this;
 }
 
+codeunit_sequence& codeunit_sequence::operator=(const codeunit_sequence_view& view) noexcept
+{
+	codeunit_sequence result(view);
+	this->transfer_data(result);
+	return *this;
+}
+
 codeunit_sequence::~codeunit_sequence() noexcept
 {
 	this->deallocate();

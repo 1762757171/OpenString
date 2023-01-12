@@ -2,15 +2,9 @@
 #include <ostream>
 #include "common/index_interval.h"
 #include "text.h"
+#include "format.h"
 
 NS_EASY_BEGIN
-
-inline std::ostream& operator<<(std::ostream& os, const index_interval& v)
-{
-	if(v.is_empty())
-		return os << "(∅)";
-	return os << "[" << v.get_inclusive_min() << ", " << v.get_exclusive_max() << ")";
-}
 
 inline std::ostream& operator<<(std::ostream& os, const codeunit_sequence_view& v)
 {
@@ -22,6 +16,11 @@ inline std::ostream& operator<<(std::ostream& os, const codeunit_sequence_view& 
 inline std::ostream& operator<<(std::ostream& os, const codeunit_sequence& v)
 {
 	return os << v.view();
+}
+
+inline std::ostream& operator<<(std::ostream& os, const index_interval& v)
+{
+	return os << format("{}"_cuqv, v);
 }
 
 inline std::ostream& operator<<(std::ostream& os, const codepoint& v)
@@ -47,6 +46,7 @@ inline std::ostream& operator<<(std::ostream& os, const text& v)
 
 DEFINE_PRINT_TO(codeunit_sequence_view)
 DEFINE_PRINT_TO(codeunit_sequence)
+DEFINE_PRINT_TO(index_interval)
 DEFINE_PRINT_TO(text_view)
 DEFINE_PRINT_TO(text)
 

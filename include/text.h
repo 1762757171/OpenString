@@ -23,6 +23,8 @@ public:
 	codeunit_sequence(codeunit_sequence&&) noexcept;
 	codeunit_sequence& operator=(const codeunit_sequence&) noexcept;
 	codeunit_sequence& operator=(codeunit_sequence&&) noexcept;
+	
+	codeunit_sequence& operator=(const codeunit_sequence_view& view) noexcept;
 
 	~codeunit_sequence() noexcept;
 

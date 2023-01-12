@@ -342,6 +342,16 @@ public:
 		return this->upper_.value;
 	}
 
+	[[nodiscard]] constexpr const bound& get_lower_bound() const noexcept
+	{
+		return this->lower_;
+	}
+
+	[[nodiscard]] constexpr const bound& get_upper_bound() const noexcept
+	{
+		return this->upper_;
+	}
+
 	[[nodiscard]] constexpr i32 size() const noexcept
 	{
 		return this->get_exclusive_max() - this->get_inclusive_min();
