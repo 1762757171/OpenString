@@ -8,12 +8,12 @@
         <img src="https://img.shields.io/badge/progress-15%25-yellow" alt="progress" />
       </a>
       <br/>
-      <a href="https://www.yuque.com/hoshizora/ymoraa/up4vczm0ancqar9l">
+      <!-- <a href="https://www.yuque.com/hoshizora/ymoraa/up4vczm0ancqar9l">
         <img src="https://img.shields.io/badge/docs-English-informational" alt="docs-EN" />
       </a>
       <a href="https://www.yuque.com/hoshizora/ymoraa/poekpwmnm76o6c8s">
         <img src="https://img.shields.io/badge/docs-%E4%B8%AD%E6%96%87-informational" alt="docs-ZH" />
-      </a>
+      </a> -->
     </div>
 
   <b>A modern user-friendly string library for game developing</b><br/>
@@ -28,6 +28,13 @@
 - User-friendly APIs
 - Encoding dependencies are encapsulated and hidden
 - Using [{fmt}](https://fmt.dev/latest/index.html)-like formatting method
+- High performance
+
+## Target Users
+
+- Ask for a easy-using and high-performance string library.
+- Do not prepare to worry about encoding things.
+- Deal with strings in common sense and safe way.
 
 ## Benchmarks
 
