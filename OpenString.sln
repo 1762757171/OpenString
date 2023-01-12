@@ -7,6 +7,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenString", "VisualStudioS
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test", "VisualStudioSolution\test.vcxproj", "{5AEA09DB-474B-4770-AEF6-22F4AF32EDC3}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Visualizer", "Visualizer", "{69C45B19-D146-4B14-862B-2C41E82374E0}"
+	ProjectSection(SolutionItems) = preProject
+		OpenString.natvis = OpenString.natvis
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
