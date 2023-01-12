@@ -10,6 +10,7 @@
     </div>
 
   <b>A modern user-friendly string library for game developing</b><br/>
+  <a href="https://github.com/1762757171/OpenString/blob/master/README_ZH.md">中文</a><br/>
 </div>
 
 ## License
