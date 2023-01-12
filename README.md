@@ -28,14 +28,15 @@ todo
 
 ## Q&A
 
-*Q:* Why both Visual Studio solution file and xmake.lua exist?
-*A:* This project provides two ways to build, both Visual Studio and XMake are supported. CMake support may be added later.
+todo
 
 ## TODO
 
+- CMake support
 - Folder directory path library
 - A ``name`` class for easy copying and comparing
 - Localization support
+- Log support
 
 ## Thanks
 
