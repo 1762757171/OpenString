@@ -261,7 +261,6 @@ class text
 public:
 
 	text() noexcept;
-	explicit text(nullptr_t) noexcept;		// Construct without initialization
 	text(const text&) noexcept;
 	text(text&&) noexcept;
 	text& operator=(const text&) noexcept;

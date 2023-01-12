@@ -769,7 +769,6 @@ bool operator==(const codeunit_sequence_view& lhs, const codeunit_sequence& rhs)
 }
 
 text::text() noexcept = default;
-text::text(nullptr_t) noexcept { }
 text::text(const text&) noexcept = default;
 text::text(text&&) noexcept = default;
 text& text::operator=(const text&) noexcept = default;

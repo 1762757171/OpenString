@@ -763,7 +763,7 @@ public:
 		const index_interval selection = range.select(this->size());
 		const i32 first = this->get_codeunit_index( selection.get_inclusive_min() );
 		const i32 last = this->get_codeunit_index( selection.get_exclusive_max() );
-		return text_view( this->view_.subview({ '[', first, last, ')' }) );
+		return { this->view_.subview({ '[', first, last, ')' }) };
 	}
 
 	[[nodiscard]] constexpr text_view operator[](const index_interval& range) const noexcept
