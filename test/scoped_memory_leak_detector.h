@@ -20,7 +20,7 @@ public:
 		if (_CrtMemDifference(&state_difference, &memory_state_, &state_ending))
 		{
 			_CrtMemDumpAllObjectsSince( &memory_state_ );
-			std::cout << "Detector@ " << filename_ << " (" << line_ << "): Memory leak detected!" << std::endl;
+			std::cerr << "Detector@ " << filename_ << " (" << line_ << "): Memory leak detected!" << std::endl;
 		}
 	}
 
