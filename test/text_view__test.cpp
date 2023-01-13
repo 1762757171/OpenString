@@ -6,8 +6,11 @@ using namespace easy;
 
 TEST(text_view, iterate)
 {
+	SCOPED_DETECT_MEMORY_LEAK
 	{
 		constexpr auto view = "你 好 😙"_txtv;
+		constexpr int size = view.size();
+		EXPECT_EQ(size, 5);
 		constexpr codepoint cp[] = { U'你'_cp, U' '_cp, U'好'_cp, U' '_cp, U'😙'_cp };
 		i32 index = 0;
 		for(const auto c : view)
@@ -20,6 +23,7 @@ TEST(text_view, iterate)
 
 TEST(text_view, subtext)
 {
+	SCOPED_DETECT_MEMORY_LEAK
 	{
 		constexpr auto view = "text view"_txtv;
 		constexpr text_view subview = view.subview({ '(', 2, 6,']' });
@@ -34,6 +38,7 @@ TEST(text_view, subtext)
 
 TEST(text_view, trim)
 {
+	SCOPED_DETECT_MEMORY_LEAK
 	{
 		constexpr text_view view("   123 1234    ");
 		
@@ -82,6 +87,7 @@ TEST(text_view, trim)
 
 TEST(text_view, index_of)
 {
+	SCOPED_DETECT_MEMORY_LEAK
 	{
 		constexpr auto view = "你❤好❤a𪚥"_txtv;
 		EXPECT_EQ(view.index_of("❤"_txtv), 1);
@@ -110,6 +116,7 @@ TEST(text_view, index_of)
 
 TEST(text_view, access)
 {
+	SCOPED_DETECT_MEMORY_LEAK
 	{
 		constexpr auto view = "你❤好❤a𪚥"_txtv;
 		EXPECT_EQ(view[3], U'❤');
@@ -118,6 +125,7 @@ TEST(text_view, access)
 
 TEST(text_view, starts_ends_with)
 {
+	SCOPED_DETECT_MEMORY_LEAK
 	{
 		constexpr text_view view("   123 1234  \t  ");
 		EXPECT_TRUE(view.starts_with("  "_txtv));

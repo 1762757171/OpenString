@@ -87,6 +87,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\test\gtest_printers_extension.h" />
+    <ClInclude Include="..\test\scoped_memory_leak_detector.h" />
     <ClInclude Include="..\test\pch.h" />
   </ItemGroup>
   <ItemGroup>

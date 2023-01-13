@@ -40,6 +40,9 @@
     <ClInclude Include="..\test\pch.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="..\test\scoped_memory_leak_detector.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

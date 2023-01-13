@@ -5,6 +5,7 @@ using namespace easy;
 
 TEST(text, construct)
 {
+	SCOPED_DETECT_MEMORY_LEAK
 	{
 		const text t;
 		EXPECT_TRUE(t.is_empty());
@@ -28,6 +29,7 @@ TEST(text, construct)
 
 TEST(text, concatenate)
 {
+	SCOPED_DETECT_MEMORY_LEAK
 	{
 		const text result = "Hello " + "World!"_txtv;
 		EXPECT_EQ(result, "Hello World!");
@@ -44,6 +46,7 @@ TEST(text, concatenate)
 
 TEST(text, join)
 {
+	SCOPED_DETECT_MEMORY_LEAK
 	{
 		const std::vector<text_view> views = { "This"_txtv, "is"_txtv, "a"_txtv, "very"_txtv, "very"_txtv, "long"_txtv, "text"_txtv };
 		const text joined_1 = text::join(views, "/**/"_txtv);
@@ -55,6 +58,7 @@ TEST(text, join)
 
 TEST(text, reverse)
 {
+	SCOPED_DETECT_MEMORY_LEAK
 	{
 		text t("你好a😙😙你");
 		t.reverse();
@@ -66,6 +70,7 @@ TEST(text, reverse)
 
 TEST(text, replace)
 {
+	SCOPED_DETECT_MEMORY_LEAK
 	{
 		text t("你好😙😙你");
 		t.write_at(2, 'a'_cp);
@@ -99,6 +104,7 @@ TEST(text, replace)
 
 TEST(text, remove_prefix_suffix)
 {
+	SCOPED_DETECT_MEMORY_LEAK
 	{
 		text t = "She says: 你好😙"_txtv;
 		t.self_remove_prefix("He says:");
@@ -112,6 +118,7 @@ TEST(text, remove_prefix_suffix)
 
 TEST(text, trim)
 {
+	SCOPED_DETECT_MEMORY_LEAK
 	{
 		text t("");
 		EXPECT_TRUE(t.self_trim_start().is_empty());

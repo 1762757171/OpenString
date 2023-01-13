@@ -26,21 +26,24 @@
     <ClInclude Include="..\include\adapters.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\common\basic_types.h">
-      <Filter>include</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\common\definitions.h">
-      <Filter>include</Filter>
+      <Filter>include\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\common\basic_types.h">
+      <Filter>include\common</Filter>
     </ClInclude>
     <ClInclude Include="..\include\common\index_interval.h">
-      <Filter>include</Filter>
+      <Filter>include\common</Filter>
     </ClInclude>
     <ClInclude Include="..\include\common\unicode.h">
-      <Filter>include</Filter>
+      <Filter>include\common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\text.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\format.cpp">
       <Filter>source</Filter>
     </ClCompile>
   </ItemGroup>

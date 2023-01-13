@@ -57,6 +57,8 @@ struct codeunit_sequence_accessor
 
 TEST(codeunit_sequence, construct)
 {
+	SCOPED_DETECT_MEMORY_LEAK
+	
 	const codeunit_sequence cuq_default_ctor;
 	const codeunit_sequence cuq_ctor_supplement("𪚥😁");
 	const codeunit_sequence cuq_ctor_long("👌𪚥1😁 你好");
@@ -68,6 +70,7 @@ TEST(codeunit_sequence, construct)
 
 TEST(codeunit_sequence, concatenate)
 {
+	SCOPED_DETECT_MEMORY_LEAK
 	{
 		constexpr char code_unit_array_wo[] = { '\xe6', '\x88', '\x91', '\0' };
 		const codeunit_sequence cuq_wo(code_unit_array_wo);
@@ -82,6 +85,7 @@ TEST(codeunit_sequence, concatenate)
 
 TEST(codeunit_sequence, split)
 {
+	SCOPED_DETECT_MEMORY_LEAK
 	{
 		const codeunit_sequence sequence("This        is   a long string"_cuqv);
 		std::vector<codeunit_sequence_view> result;
@@ -93,6 +97,7 @@ TEST(codeunit_sequence, split)
 
 TEST(codeunit_sequence, trim)
 {
+	SCOPED_DETECT_MEMORY_LEAK
 	{ 
 		{
 			codeunit_sequence cuq_src("   123 1234    ");
@@ -187,6 +192,7 @@ TEST(codeunit_sequence, trim)
 
 TEST(codeunit_sequence, empty)
 {
+	SCOPED_DETECT_MEMORY_LEAK
 	{
 		codeunit_sequence cuq("12345");
 		cuq.empty(50);
@@ -214,6 +220,7 @@ TEST(codeunit_sequence, empty)
 
 TEST(codeunit_sequence, reserve)
 {
+	SCOPED_DETECT_MEMORY_LEAK
 	{
 		codeunit_sequence cuq("12345");
 		const codeunit_sequence_accessor* accessor = ACCESS(cuq);
@@ -243,6 +250,7 @@ TEST(codeunit_sequence, reserve)
 
 TEST(codeunit_sequence, index)
 {
+	SCOPED_DETECT_MEMORY_LEAK
 	{
 		const codeunit_sequence cuq("abbabbabbabbab");
 		EXPECT_EQ(cuq.index_of("ab"_cuqv), 0);
@@ -259,6 +267,7 @@ TEST(codeunit_sequence, index)
 
 TEST(codeunit_sequence, replace)
 {
+	SCOPED_DETECT_MEMORY_LEAK
 	// same size
 	{
 		{
@@ -312,6 +321,7 @@ TEST(codeunit_sequence, replace)
 
 TEST(codeunit_sequence, join)
 {
+	SCOPED_DETECT_MEMORY_LEAK
 	{
 		const std::vector<codeunit_sequence_view> views = { "This"_cuqv, "is"_cuqv, "a"_cuqv, "very"_cuqv, "very"_cuqv, "long"_cuqv, "text"_cuqv };
 		const codeunit_sequence joined_1 = codeunit_sequence::join(views, "/**/"_cuqv);

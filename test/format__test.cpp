@@ -15,6 +15,8 @@ EXPECT_THROW({ try { \
 
 TEST(format, built_in_types)
 {
+    SCOPED_DETECT_MEMORY_LEAK
+    
     // escaped braces
     EXPECT_EQ("{}"_cuqv, format("{{}}"_cuqv));
 
@@ -42,12 +44,14 @@ TEST(format, built_in_types)
     EXPECT_EQ("nullptr"_cuqv, format("{}"_cuqv, nullptr));
     EXPECT_EQ("0x00000000075bcd15"_cuqv, format("{}"_cuqv, reinterpret_cast<void *>(123456789)));
 
-    // code unit sequence
-    EXPECT_EQ("繁星明 😀"_cuqv, format("繁{}明{}"_cuqv, "星"_cuqv, codeunit_sequence(" 😀")));
+    // string
+    EXPECT_EQ("繁星明 😀"_cuqv, format("{}{}明{}"_cuqv, "繁", "星"_cuqv, codeunit_sequence(" 😀")));
 }
 
 TEST(format, undefined_type)
 {
+    SCOPED_DETECT_MEMORY_LEAK
+    
     struct test_struct
     {
         int a;
@@ -61,11 +65,15 @@ TEST(format, undefined_type)
 
 TEST(format, manual_index)
 {
+    SCOPED_DETECT_MEMORY_LEAK
+    
     EXPECT_EQ("My name is 繁星明 and I'm 25 years old."_cuqv, format("My name is {1} and I'm {0} years old."_cuqv, 25, "繁星明"_cuqv));
 }
 
 TEST(format, format_exception)
 {
+    SCOPED_DETECT_MEMORY_LEAK
+    
     EXPECT_THROW_WITH_MESSAGE(format("{}{ {}"_cuqv, 3), format_error, "Unclosed left brace is not allowed!");
     EXPECT_THROW_WITH_MESSAGE(format("{}} "_cuqv, 3), format_error, "Unclosed right brace is not allowed!");
     EXPECT_THROW_WITH_MESSAGE(format("{-2}"_cuqv, 3), format_error, "Invalid format index [-2]: Index should not be negative!");

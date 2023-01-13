@@ -5,6 +5,7 @@ using namespace easy;
 
 TEST(codeunit_sequence_view, subview)
 {
+	SCOPED_DETECT_MEMORY_LEAK
 	{
 		constexpr auto view = "sequence view"_cuqv;
 		constexpr codeunit_sequence_view subview = view.subview({ '[', 4, 10, ')'});
@@ -19,6 +20,7 @@ TEST(codeunit_sequence_view, subview)
 
 TEST(codeunit_sequence_view, index_of)
 {
+	SCOPED_DETECT_MEMORY_LEAK
 	{
 		constexpr auto view = "This is a long string"_cuqv;
 		constexpr i32 index_1 = view.index_of(" "_cuqv);
@@ -46,6 +48,7 @@ TEST(codeunit_sequence_view, index_of)
 
 TEST(codeunit_sequence_view, split)
 {
+	SCOPED_DETECT_MEMORY_LEAK
 	{
 		constexpr auto view = "This is a long string"_cuqv;
 		constexpr auto subviews = view.split(" "_cuqv);
@@ -68,14 +71,20 @@ TEST(codeunit_sequence_view, split)
 
 TEST(codeunit_sequence_view, count)
 {
+	SCOPED_DETECT_MEMORY_LEAK
 	{
 		constexpr auto view = "This is a long string "_cuqv;
 		EXPECT_EQ(view.count(" "_cuqv), 5);
+	}
+	{
+		constexpr auto view = "aaaaaaaaa"_cuqv;
+		EXPECT_EQ(view.count("aa"_cuqv), 4);
 	}
 }
 
 TEST(codeunit_sequence_view, iterate)
 {
+	SCOPED_DETECT_MEMORY_LEAK
 	{
 		static constexpr char sequence[] = "sequence view";
 		constexpr codeunit_sequence_view view(sequence);
@@ -102,6 +111,7 @@ TEST(codeunit_sequence_view, iterate)
 
 TEST(codeunit_sequence_view, equal)
 {
+	SCOPED_DETECT_MEMORY_LEAK
 	{
 		constexpr codeunit_sequence_view view_default_ctor;
 		EXPECT_EQ(view_default_ctor, "");
@@ -125,6 +135,7 @@ TEST(codeunit_sequence_view, equal)
 
 TEST(codeunit_sequence_view, trim)
 {
+	SCOPED_DETECT_MEMORY_LEAK
 	{
 		constexpr codeunit_sequence_view view("   123 1234  \t  ");
 		
@@ -175,6 +186,7 @@ TEST(codeunit_sequence_view, trim)
 
 TEST(codeunit_sequence_view, starts_ends_with)
 {
+	SCOPED_DETECT_MEMORY_LEAK
 	{
 		constexpr codeunit_sequence_view view("   123 1234  \t  ");
 		EXPECT_TRUE(view.starts_with("  "_cuqv));

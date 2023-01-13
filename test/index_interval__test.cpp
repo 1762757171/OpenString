@@ -5,6 +5,7 @@ using namespace easy;
 
 TEST(index_interval, intersect)
 {
+	SCOPED_DETECT_MEMORY_LEAK
 	{
 		constexpr index_interval lhs { '~', 6, ')' };
 		constexpr index_interval rhs { '[', 4, '~' };
