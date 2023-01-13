@@ -329,6 +329,24 @@ struct formatter<index_interval>
 };
 
 template<> 
+struct formatter<const char*>
+{
+    static codeunit_sequence format_argument(const char* value, const codeunit_sequence_view& specification)
+    {
+        return codeunit_sequence{value};
+    }
+};
+
+template<size_t N> 
+struct formatter<char[N]>
+{
+    static codeunit_sequence format_argument(const char (&value)[N], const codeunit_sequence_view& specification)
+    {
+        return codeunit_sequence{value};
+    }
+};
+
+template<> 
 struct formatter<codeunit_sequence_view>
 {
     static codeunit_sequence format_argument(const codeunit_sequence_view& value, const codeunit_sequence_view& specification)
