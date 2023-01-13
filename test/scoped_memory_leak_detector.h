@@ -14,7 +14,8 @@ public:
 	}
 
 	~scoped_memory_leak_detector() {
-		_CrtMemState state_ending, state_difference;
+		[[maybe_unused]] _CrtMemState state_ending;
+		[[maybe_unused]] _CrtMemState state_difference;
 		_CrtMemCheckpoint(&state_ending);
 		if (_CrtMemDifference(&state_difference, &memory_state_, &state_ending))
 		{
@@ -22,9 +23,14 @@ public:
 			std::cout << "Detector@ " << filename_ << " (" << line_ << "): Memory leak detected!" << std::endl;
 		}
 	}
+
+	scoped_memory_leak_detector(const scoped_memory_leak_detector&) = delete;
+	scoped_memory_leak_detector(scoped_memory_leak_detector&&) = delete;
+	scoped_memory_leak_detector& operator=(const scoped_memory_leak_detector&) = delete;
+	scoped_memory_leak_detector& operator=(scoped_memory_leak_detector&&) = delete;
 	
 private:
-	_CrtMemState memory_state_ { nullptr };
+	_CrtMemState memory_state_ {  };
 	const char* filename_;
 	int line_;
 };
