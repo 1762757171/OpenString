@@ -47,6 +47,7 @@ todo
 ## TODO
 
 - CMake support
+- Regex support
 - Folder directory path library
 - A ``name`` class for easy copying and comparing
 - Localization support
