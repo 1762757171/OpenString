@@ -454,7 +454,7 @@ public:
 			if(index == index_invalid)
 				break;
 			++count;
-			view = view.subview({ '(', index, '~' });
+			view = view.subview({ '[', index + pattern.size(), '~' });
 		}
 		return count;
 	}
