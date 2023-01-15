@@ -1,4 +1,7 @@
 #pragma once
+
+#ifdef _WIN32
+
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
 #include <iostream>
@@ -36,3 +39,9 @@ private:
 };
 
 #define SCOPED_DETECT_MEMORY_LEAK scoped_memory_leak_detector detector{ __FILE__, __LINE__ };
+
+#else
+
+#define SCOPED_DETECT_MEMORY_LEAK
+
+#endif
