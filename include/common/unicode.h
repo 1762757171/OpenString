@@ -20,7 +20,7 @@ namespace unicode
 	{
 		if (c == 0)
 			return 1;
-		constexpr u8 mask = 0b10000000i8;
+		constexpr char mask = 0b10000000_as_char;
 		i32 size = 0;
 		u8 v = c;
 		while (v & mask)
@@ -43,11 +43,11 @@ namespace unicode
 	{
 		constexpr char masks[] =
 		{
-			0b00111111i8,
-			0b01111111i8,
-			0b00011111i8,
-			0b00001111i8,
-			0b00000111i8,
+			0b00111111_as_char,
+			0b01111111_as_char,
+			0b00011111_as_char,
+			0b00001111_as_char,
+			0b00000111_as_char,
 		};
 		return masks[length];
 	}
