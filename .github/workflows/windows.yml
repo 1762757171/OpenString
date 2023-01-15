@@ -16,7 +16,7 @@ jobs:
 
       - name: Build with xmake in debug mode
         run: |
-          xmake f -p -a x64 -m debug
+          xmake f -a x64 -m debug
           xmake -y -v -w
 
       - name: Run debug test
