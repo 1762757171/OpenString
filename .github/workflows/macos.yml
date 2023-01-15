@@ -1,10 +1,10 @@
-name: windows
+name: macos
 
 on: [pull_request, push]
 
 jobs:
   build-test-xmake:
-    runs-on: windows-latest
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
 

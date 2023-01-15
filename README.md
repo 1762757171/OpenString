@@ -4,16 +4,6 @@
       <a href="https://github.com/1762757171/OpenString/actions/workflows/windows.yml">
         <img src="https://github.com/1762757171/OpenString/actions/workflows/windows.yml/badge.svg" alt="ci-windows" />
       </a>
-      <a>
-        <img src="https://img.shields.io/badge/progress-15%25-yellow" alt="progress" />
-      </a>
-      <br/>
-      <!-- <a href="https://www.yuque.com/hoshizora/ymoraa/up4vczm0ancqar9l">
-        <img src="https://img.shields.io/badge/docs-English-informational" alt="docs-EN" />
-      </a>
-      <a href="https://www.yuque.com/hoshizora/ymoraa/poekpwmnm76o6c8s">
-        <img src="https://img.shields.io/badge/docs-%E4%B8%AD%E6%96%87-informational" alt="docs-ZH" />
-      </a> -->
     </div>
 
   <b>A modern user-friendly string library for game developing</b><br/>
