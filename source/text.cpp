@@ -307,6 +307,8 @@ codeunit_sequence& codeunit_sequence::append(const char* rhs) noexcept
 
 codeunit_sequence& codeunit_sequence::append(const char codeunit, const i32 count) noexcept
 {
+	if(count <= 0)
+		return *this;
 	const i32 old_size = this->size();
 	const i32 answer_size = old_size + count;
 	this->reserve(answer_size);

@@ -24,7 +24,7 @@ TEST(format, built_in_types)
     EXPECT_EQ("0"_cuqv, format("{}"_cuqv, 0));
     EXPECT_EQ("00255"_txtv, format("{:05d}"_txtv, 255));
     EXPECT_EQ("ff"_cuqv, format("{:x}"_cuqv, 255));
-    EXPECT_EQ("0xff"_cuqv, format("{:#x}"_cuqv, 255));
+    EXPECT_EQ("-0xff"_cuqv, format("{:#x}"_cuqv, -255));
 
     // float
     EXPECT_EQ("3.14"_cuqv, format("{}"_cuqv, 3.14f));
