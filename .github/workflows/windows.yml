@@ -37,8 +37,8 @@ jobs:
       - name: Upload binary
         uses: actions/upload-artifact@v3
         with:
-          name: test-${{ matrix.os }}-${{ matrix.compiler }}${{ matrix.configuration }}
-          path: build/windows/x64/${{ matrix.configuration }}/
+          name: test-${{ matrix.os }}${{ matrix.configuration }}
+          path: build/windows/x64/${{ matrix.configuration }}/test
 
   Test:
     needs: Build
@@ -53,8 +53,8 @@ jobs:
       - name: Download binary
         uses: actions/download-artifact@v3
         with:
-          name: test-${{ matrix.os }}-${{ matrix.compiler }}${{ matrix.configuration }}
+          name: test-${{ matrix.os }}${{ matrix.configuration }}
           path: build/
 
       - name: Run executable
-        run: start "build/test-${{ matrix.os }}-${{ matrix.compiler }}${{ matrix.configuration }}"
+        run: start "build/test-${{ matrix.os }}${{ matrix.configuration }}"
