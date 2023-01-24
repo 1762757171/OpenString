@@ -1,7 +1,12 @@
-name: MacOS XMake
+name: macos
 
 on: 
   pull_request:
+    paths:
+      - "xmake.lua"
+      - "include/**"
+      - "source/**"
+      - "test/**"
   push:
     branches:
       - "master"
@@ -13,7 +18,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ macos-latest ]
-        configuration: [ Debug, Release ]
+        configuration: [ debug, release ]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2

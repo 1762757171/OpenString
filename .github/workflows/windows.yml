@@ -1,7 +1,12 @@
-name: Windows XMake
+name: windows
 
 on: 
   pull_request:
+    paths:
+      - "xmake.lua"
+      - "include/**"
+      - "source/**"
+      - "test/**"
   push:
     branches:
       - "master"
