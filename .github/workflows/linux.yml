@@ -1,0 +1,23 @@
+name: linux
+
+on: [pull_request, push]
+
+jobs:
+  build-test-xmake:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup xmake
+        uses: xmake-io/github-action-setup-xmake@v1
+        with:
+          xmake-version: latest
+          actions-cache-folder: ".xmake-cache"
+
+      - name: Build with xmake in debug mode
+        run: |
+          xmake f -m debug -y
+          xmake -y -v -w
+
+      - name: Run debug test
+        run: xmake run test

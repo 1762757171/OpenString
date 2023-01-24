@@ -4,6 +4,9 @@
       <a href="https://github.com/1762757171/OpenString/actions/workflows/windows.yml">
         <img src="https://github.com/1762757171/OpenString/actions/workflows/windows.yml/badge.svg" alt="ci-windows" />
       </a>
+      <a href="https://github.com/1762757171/OpenString/actions/workflows/linux.yml">
+        <img src="https://github.com/1762757171/OpenString/actions/workflows/linux.yml/badge.svg" alt="ci-linux" />
+      </a>
     </div>
 
   <b>A modern user-friendly string library for game developing</b><br/>
