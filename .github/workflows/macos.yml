@@ -1,4 +1,4 @@
-name: <OpenString> XMake Build & Test Pipeline
+name: Build & Test Pipeline with XMake for MacOS
 
 on: 
   pull_request:
@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ windows-latest, ubuntu-latest, macos-latest ]
+        os: [ macos-latest ]
         configuration: [ Debug, Release ]
     runs-on: ${{ matrix.os }}
     steps:
@@ -31,8 +31,15 @@ jobs:
 
   Test:
     needs: Build
-    name: Test
+    name: Run <test> with XMake
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ macos-latest ]
+        configuration: [ Debug, Release ]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Run <test>
-        run: xmake run test
+        run: |
+          xmake f -m ${{ matrix.configuration }} -y
+          xmake run test
