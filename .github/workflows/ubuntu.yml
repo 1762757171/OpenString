@@ -1,4 +1,4 @@
-name: Build & Test Pipeline with XMake for Ubuntu
+name: Ubuntu XMake
 
 on: 
   pull_request:

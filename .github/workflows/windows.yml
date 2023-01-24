@@ -1,4 +1,4 @@
-name: Build & Test Pipeline with XMake for Windows
+name: Windows XMake
 
 on: 
   pull_request:

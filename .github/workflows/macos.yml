@@ -1,4 +1,4 @@
-name: Build & Test Pipeline with XMake for MacOS
+name: MacOS XMake
 
 on: 
   pull_request:
