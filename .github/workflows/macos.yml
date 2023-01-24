@@ -29,9 +29,15 @@ jobs:
           xmake f -m ${{ matrix.configuration }} -y
           xmake -y -v -w
 
+      - name: Upload binary
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-${{ matrix.os }}-${{ matrix.compiler }}-${{ matrix.configuration }}
+          path: build/macos/amd64/${{ matrix.configuration }}/
+
   Test:
     needs: Build
-    name: Run <test> with XMake
+    name: Test
     strategy:
       fail-fast: false
       matrix:
@@ -39,7 +45,12 @@ jobs:
         configuration: [ Debug, Release ]
     runs-on: ${{ matrix.os }}
     steps:
-      - name: Run <test>
-        run: |
-          xmake f -m ${{ matrix.configuration }} -y
-          xmake run test
+      - name: Download binary
+        uses: actions/download-artifact@v3
+        with:
+          name: test-${{ matrix.os }}-${{ matrix.compiler }}-${{ matrix.configuration }}
+          path: build/
+
+      - name: Run executable
+        run: ./build/test-${{ matrix.os }}-${{ matrix.compiler }}-${{ matrix.configuration }}
+          

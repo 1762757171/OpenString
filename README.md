@@ -4,8 +4,11 @@
       <a href="https://github.com/1762757171/OpenString/actions/workflows/windows.yml">
         <img src="https://github.com/1762757171/OpenString/actions/workflows/windows.yml/badge.svg" alt="ci-windows" />
       </a>
-      <a href="https://github.com/1762757171/OpenString/actions/workflows/linux.yml">
-        <img src="https://github.com/1762757171/OpenString/actions/workflows/linux.yml/badge.svg" alt="ci-linux" />
+      <a href="https://github.com/1762757171/OpenString/actions/workflows/ubuntu.yml">
+        <img src="https://github.com/1762757171/OpenString/actions/workflows/ubuntu.yml/badge.svg" alt="ci-ubuntu" />
+      </a>
+      <a href="https://github.com/1762757171/OpenString/actions/workflows/macos.yml">
+        <img src="https://github.com/1762757171/OpenString/actions/workflows/macos.yml/badge.svg" alt="ci-macos" />
       </a>
     </div>
 
