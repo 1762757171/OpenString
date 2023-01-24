@@ -1,0 +1,38 @@
+name: <OpenString> XMake Build & Test Pipeline
+
+on: 
+  pull_request:
+  push:
+    branches:
+      - "master"
+
+jobs:
+  Build:
+    name: Build with XMake
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ windows-latest, ubuntu-latest, macos-latest ]
+        configuration: [ Debug, Release ]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup XMake
+        uses: xmake-io/github-action-setup-xmake@v1
+        with:
+          xmake-version: latest
+          actions-cache-folder: ".xmake-cache"
+
+      - name: Build with configuration file
+        run: |
+          xmake f -m ${{ matrix.configuration }} -y
+          xmake -y -v -w
+
+  Test:
+    needs: Build
+    name: Test
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Run <test>
+        run: xmake run test
