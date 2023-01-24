@@ -16,7 +16,7 @@ class codeunit_sequence
 {
 public:
 
-#pragma region constructors
+// code-region-start: constructors
 
 	codeunit_sequence() noexcept;
 	explicit codeunit_sequence(i32 size) noexcept;
@@ -40,9 +40,9 @@ public:
 	template<typename Container>
 	static codeunit_sequence join(const Container& container, const codeunit_sequence_view& separator) noexcept;
 
-#pragma endregion constructors
+// code-region-end: constructors
 
-#pragma region iterators
+// code-region-start: iterators
 
 	using const_iterator = codeunit_sequence_view::const_iterator;
 
@@ -77,7 +77,7 @@ public:
 	[[nodiscard]] const_iterator cbegin() const noexcept;
 	[[nodiscard]] const_iterator cend() const noexcept;
 
-#pragma endregion iterators
+// code-region-end: iterators
 
 	[[nodiscard]] codeunit_sequence_view view() const& noexcept;
 	/**
@@ -315,7 +315,7 @@ public:
 	template<typename Container>
 	static text join(const Container& container, const text_view& separator) noexcept;
 
-#pragma region iterator
+// code-region-start: iterator
 
 	using const_iterator = text_view::const_iterator;
 
@@ -366,7 +366,7 @@ public:
 	[[nodiscard]] const_iterator cbegin() const noexcept;
 	[[nodiscard]] const_iterator cend() const noexcept;
 
-#pragma endregion iterator
+// code-region-end: iterator
 
 	[[nodiscard]] codeunit_sequence raw() && noexcept;
 	[[nodiscard]] const codeunit_sequence& raw() const& noexcept;

@@ -88,7 +88,7 @@ class codeunit_sequence_view
 {
 public:
 
-#pragma region constructors
+// code-region-start: constructors
 
 	constexpr codeunit_sequence_view() noexcept = default;
 	constexpr codeunit_sequence_view(const codeunit_sequence_view&) noexcept = default;
@@ -124,9 +124,9 @@ public:
 		: codeunit_sequence_view(cp.raw(), cp.size())
 	{ }
 
-#pragma endregion constructors
+// code-region-end: constructors
 
-#pragma region iterators
+// code-region-start: iterators
 
 	struct const_iterator
 	{
@@ -250,7 +250,7 @@ public:
 		return this->end();
 	}
 
-#pragma endregion iterators
+// code-region-end: iterators
 	
 	[[nodiscard]] constexpr bool operator==(const codeunit_sequence_view& rhs) const noexcept
 	{
@@ -529,7 +529,7 @@ class text_view
 {
 public:
 
-#pragma region constructors
+// code-region-start: constructors
 	
 	constexpr text_view() noexcept = default;
 	constexpr text_view(const text_view&) noexcept = default;
@@ -560,9 +560,9 @@ public:
 		return *this;
 	}
 
-#pragma endregion constructors
+// code-region-end: constructors
 
-#pragma region iterators
+// code-region-start: iterators
 
 	struct const_iterator
 	{
@@ -716,7 +716,7 @@ public:
 		return this->end();
 	}
 
-#pragma endregion iterators
+// code-region-end: iterators
 	
 	[[nodiscard]] constexpr bool operator==(const text_view& rhs) const noexcept
 	{

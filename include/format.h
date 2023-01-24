@@ -37,7 +37,7 @@ namespace details
     class format_view
     {
     public:
-    #pragma region constructors
+    // code-region-start: constructors
 
         explicit constexpr format_view(const codeunit_sequence_view& format) noexcept
             : format_(format)
@@ -47,9 +47,9 @@ namespace details
             : format_(format.raw())
         { }
 
-    #pragma endregion constructors
+    // code-region-end: constructors
 
-    #pragma region iterators
+    // code-region-start: iterators
 
         enum class run_type : u8
         {
@@ -153,8 +153,8 @@ namespace details
             return this->end();
         }
 
-    #pragma endregion iterators
-        
+    // code-region-end: iterators
+    
     private:
         codeunit_sequence_view format_;
     };
@@ -250,7 +250,7 @@ template<class...Args>
     return { details::format(details::format_view{ format_literal }, args...) };
 }
 
-#pragma region formatter specializations for built-in types
+// code-region-start: formatter specializations for built-in types
 
 namespace details
 {
@@ -400,7 +400,7 @@ struct formatter<T*>
     }
 };
 
-#pragma endregion formatter specializations for built-in types
+// code-region-end: formatter specializations for built-in types
 
 template<class Arg1, class...Args>
 format_error::format_error(const codeunit_sequence_view& message_format, Arg1&& arg1, Args&&...args)

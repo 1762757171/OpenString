@@ -117,7 +117,7 @@ struct codepoint
 	static constexpr i32 sequence_length = 4;
 	std::array<char, sequence_length> sequence;
 
-#pragma region constructors
+// code-region-start: constructors
 	
 	explicit constexpr codepoint(const char v0 = 0, const char v1 = 0, const char v2 = 0, const char v3 = 0) noexcept
 		: sequence({ v0, v1, v2, v3 })
@@ -138,9 +138,9 @@ struct codepoint
 		: sequence(unicode::utf32_to_utf8(cp))
 	{ }
 
-#pragma endregion constructors
+// code-region-end: constructors
 
-#pragma region iterators
+// code-region-start: iterators
 
 	struct const_iterator
 	{
@@ -269,7 +269,7 @@ struct codepoint
 		return this->end();
 	}
 
-#pragma endregion iterators
+// code-region-end: iterators
 
 	[[nodiscard]] constexpr bool operator==(const codepoint& rhs) const noexcept
 	{

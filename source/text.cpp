@@ -28,7 +28,7 @@ namespace details
 	}
 }
 
-#pragma region iterators
+// code-region-start: iterators
 
 codeunit_sequence::iterator::iterator() noexcept
 	: value()
@@ -159,7 +159,7 @@ codeunit_sequence::const_iterator codeunit_sequence::cend() const noexcept
 	return this->end();
 }
 
-#pragma endregion iterators
+// code-region-end: iterators
 
 codeunit_sequence::codeunit_sequence() noexcept
 	: store_()
