@@ -58,5 +58,7 @@ jobs:
           path: build/
 
       - name: Run executable
-        run: ./build/test
+        run: |
+          chmod 755 ./build/test
+          ./build/test
           
