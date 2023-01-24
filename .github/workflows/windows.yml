@@ -32,7 +32,7 @@ jobs:
       - name: Upload binary
         uses: actions/upload-artifact@v3
         with:
-          name: test-${{ matrix.os }}-${{ matrix.compiler }}-${{ matrix.configuration }}
+          name: test-${{ matrix.os }}-${{ matrix.compiler }}${{ matrix.configuration }}
           path: build/windows/x64/${{ matrix.configuration }}/
 
   Test:
@@ -42,14 +42,14 @@ jobs:
       fail-fast: false
       matrix:
         os: [ windows-latest ]
-        configuration: [ Debug, Release ]
+        configuration: [ debug, release ]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Download binary
         uses: actions/download-artifact@v3
         with:
-          name: test-${{ matrix.os }}-${{ matrix.compiler }}-${{ matrix.configuration }}
+          name: test-${{ matrix.os }}-${{ matrix.compiler }}${{ matrix.configuration }}
           path: build/
 
       - name: Run executable
-        run: start "build/test-${{ matrix.os }}-${{ matrix.compiler }}-${{ matrix.configuration }}"
+        run: start "build/test-${{ matrix.os }}-${{ matrix.compiler }}${{ matrix.configuration }}"
