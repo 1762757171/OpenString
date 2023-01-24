@@ -38,7 +38,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: test-${{ matrix.os }}-${{ matrix.configuration }}
-          path: build/windows/x64/${{ matrix.configuration }}/test
+          path: build/windows/x64/${{ matrix.configuration }}/test.exe
 
   Test:
     needs: Build
@@ -57,4 +57,4 @@ jobs:
           path: build/
 
       - name: Run executable
-        run: start "build/test-${{ matrix.os }}-${{ matrix.configuration }}"
+        run: start "build/test.exe"

@@ -57,6 +57,6 @@ jobs:
           path: build/
 
       - name: Run executable
-        run: ./build/test-${{ matrix.os }}-${{ matrix.configuration }}
+        run: ./build/test
 
 
