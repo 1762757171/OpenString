@@ -37,8 +37,8 @@ jobs:
       - name: Upload binary
         uses: actions/upload-artifact@v3
         with:
-          name: test-${{ matrix.os }}${{ matrix.configuration }}
-          path: build/macos/x86_64/${{ matrix.configuration }}/test
+          name: test-${{ matrix.os }}-${{ matrix.configuration }}
+          path: build/macosx/x86_64/${{ matrix.configuration }}/test
 
 
   Test:
@@ -54,9 +54,9 @@ jobs:
       - name: Download binary
         uses: actions/download-artifact@v3
         with:
-          name: test-${{ matrix.os }}${{ matrix.configuration }}
+          name: test-${{ matrix.os }}-${{ matrix.configuration }}
           path: build/
 
       - name: Run executable
-        run: ./build/test-${{ matrix.os }}${{ matrix.configuration }}
+        run: ./build/test-${{ matrix.os }}-${{ matrix.configuration }}
           
