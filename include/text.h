@@ -168,7 +168,7 @@ public:
 	
 	void reserve(i32 size);
 
-	void write_at(i32 index, char codeunit) noexcept;
+	codeunit_sequence& write_at(i32 index, char codeunit) noexcept;
 	[[nodiscard]] const char& read_at(i32 index) const noexcept;
 
 	[[nodiscard]] char& operator[](i32 index) noexcept;
@@ -413,7 +413,7 @@ public:
 	 */
 	void empty() noexcept;
 
-	void write_at(i32 index, codepoint cp) noexcept;
+	text& write_at(i32 index, codepoint cp) noexcept;
 	[[nodiscard]] codepoint read_at(i32 index) const noexcept;
 	
 	/// @note: Please use operator[] for read-only access, or use write_at method for write access.

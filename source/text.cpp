@@ -575,9 +575,10 @@ void codeunit_sequence::reserve(const i32 size)
 	this->transfer_data(result);
 }
 
-void codeunit_sequence::write_at(const i32 index, const char codeunit) noexcept
+codeunit_sequence& codeunit_sequence::write_at(const i32 index, const char codeunit) noexcept
 {
 	this->data()[index + (index >= 0 ? 0 : this->size())] = codeunit;
+	return *this;
 }
 
 const char& codeunit_sequence::read_at(const i32 index) const noexcept
@@ -1137,9 +1138,10 @@ void text::empty() noexcept
 	this->sequence_.empty();
 }
 
-void text::write_at(const i32 index, const codepoint cp) noexcept
+text& text::write_at(const i32 index, const codepoint cp) noexcept
 {
 	this->replace({ '[', index, index, ']' }, text_view(cp));
+	return *this;
 }
 
 codepoint text::read_at(const i32 index) const noexcept

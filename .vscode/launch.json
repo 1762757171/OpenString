@@ -5,19 +5,43 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Launch test - lldb",
-            "type": "lldb",
+            "name": "Debug test - xmake",
             "request": "launch",
-            "program": "${workspaceFolder}/build/windows/x64/debug/test.exe",
+            "type": "xmake",
+            "target": "",
+            "windows": {
+                "name" : "windows",
+                "type": "xmake",
+                "request": "launch",
+                "target": "${workspaceFolder}/build/windows/x64/debug/test.exe",
+            },
+            "linux": {
+                "name" : "linux",
+                "type": "xmake",
+                "request": "launch",
+                "target": "${workspaceFolder}/build/linux/x86_64/debug/test",
+            },
             "args": [],
             "cwd": "${workspaceFolder}",
             "preLaunchTask": "Build test"
         },
         {
-            "name": "Launch test - vs",
-            "type": "cppvsdbg",
+            "name": "Debug test",
             "request": "launch",
-            "program": "${workspaceFolder}/build/windows/x64/debug/test.exe",
+            "type": "cppdbg",
+            "program": "",
+            "windows": {
+                "name" : "windows",
+                "type" : "cppvsdbg",
+                "request": "launch",
+                "program": "${workspaceFolder}/build/windows/x64/debug/test.exe"
+            },
+            "linux": {
+                "name" : "linux",
+                "type" : "cppdbg",
+                "request": "launch",
+                "program": "${workspaceFolder}/build/linux/x86_64/debug/test"
+            },
             "args": [],
             "cwd": "${workspaceFolder}",
             "visualizerFile": "${workspaceFolder}/OpenString.natvis",

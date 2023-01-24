@@ -1,4 +1,5 @@
 #include "format.h"
+#include "text.h"
 
 NS_EASY_BEGIN
 
@@ -136,37 +137,69 @@ codeunit_sequence details::format_float(const float& value, const codeunit_seque
         if(!parsing.is_empty())
             throw format_error("Invalid format specification [{}]!"_cuqv, specification);
     }
-    std::chars_format format = std::chars_format::general;
     switch (type) 
     {
     case 'a':
-        format = std::chars_format::hex;
         break;
     case 'e':
-        format = std::chars_format::scientific;
         break;
     case 'f':
-        format = std::chars_format::fixed;
         break;
     case 'g':
-        format = std::chars_format::general;
         break;
     default:
         break;
     }
-    if(precision == -1)
-    {    
-        // float has a max length of 16 characters: "-3.402823466e+38".
-        char buffer[16];
-        const auto [ last, error ] = std::to_chars(buffer, buffer + sizeof(buffer), value, format);
-        return codeunit_sequence{ buffer, last };
-    }
     static constexpr i32 max_precision = 9;
     if(precision > max_precision)
         throw format_error("Too high precision for float [{}]!"_cuqv, precision);
-    char buffer[max_precision];
-    const auto [ last, error] = std::to_chars(buffer, buffer + sizeof(buffer), value, format, precision);
-    return codeunit_sequence{ buffer, last };
+    codeunit_sequence result;
+    const bool negative = value < 0;
+    if(negative)
+        result.append("-");
+    float remaining = negative ? -value : value;
+    const i32 decimal = static_cast<i32>(remaining);
+    result.append(format_integer(decimal, { }));
+    remaining -= decimal;
+    static constexpr float epsilon = 1e-3f;
+    if(precision == -1)
+    {
+        i32 floating = 1;
+        while(true)
+        {
+            remaining *= 10;
+            floating *= 10;
+            const i32 ones = static_cast<i32>(remaining);
+            floating += ones;
+            remaining -= ones;
+            if(remaining < epsilon && remaining > -epsilon)
+                break;
+        }
+        if(floating > 10)
+        {
+            const i32 dot_position = result.size();
+            result
+            .append(format_integer(floating, { }))
+            .write_at(dot_position, '.');
+        }
+    }
+    else 
+    {
+        i32 floating = 1;
+        for(i32 i = 0; i < precision; ++i)
+        {
+            remaining *= 10;
+            floating *= 10;
+            const i32 ones = static_cast<i32>(remaining);
+            floating += ones;
+            remaining -= ones;
+        }
+        const i32 dot_position = result.size();
+        result
+        .append(format_integer(floating, { }))
+        .write_at(dot_position, '.');
+    }
+    return result;
 }
 
 NS_EASY_END
