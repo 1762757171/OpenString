@@ -7,6 +7,7 @@
 #include "common/definitions.h"
 #include "common/basic_types.h"
 #include "text_view.h"
+#include <algorithm>
 #include <vector>
 
 NS_EASY_BEGIN
@@ -34,6 +35,8 @@ public:
 
 	explicit codeunit_sequence(codeunit_sequence_view sv) noexcept;
 
+	template<class...Args>
+	static codeunit_sequence build(const Args&... argument);
 	template<typename Container>
 	static codeunit_sequence join(const Container& container, const codeunit_sequence_view& separator) noexcept;
 
@@ -191,7 +194,7 @@ public:
 	[[nodiscard]] codeunit_sequence_view view_trim_end(const codeunit_sequence_view& characters = codeunit_sequence_view(" \t")) const noexcept;
 	[[nodiscard]] codeunit_sequence_view view_trim(const codeunit_sequence_view& characters = codeunit_sequence_view(" \t")) const noexcept;
 
-	[[nodiscard]] uint32_t get_hash() const noexcept;
+	[[nodiscard]] u32 get_hash() const noexcept;
 
 	[[nodiscard]] const char* c_str() const noexcept;
 
@@ -243,6 +246,34 @@ private:
 	std::array<u8, 16> store_;
 };
 
+namespace details
+{
+	template<class T>
+	[[nodiscard]] inline codeunit_sequence_view view_sequence(const T& v)
+	{
+		return codeunit_sequence_view{ v };
+	}
+
+	template<>
+	[[nodiscard]] inline codeunit_sequence_view view_sequence<codeunit_sequence>(const codeunit_sequence& v)
+	{
+		return v.view();
+	}
+}
+
+template<class...Args>
+codeunit_sequence codeunit_sequence::build(const Args&... argument)
+{
+	i32 size = 0;
+	std::array<codeunit_sequence_view, sizeof...(Args)> arguments{ details::view_sequence<Args>(argument)... };
+	for(const codeunit_sequence_view& a : arguments)
+		size += a.size();
+	codeunit_sequence result(size);
+	for(const codeunit_sequence_view& a : arguments)
+		result.append(a);
+	return { result };
+}
+
 template<typename Container>
 codeunit_sequence codeunit_sequence::join(const Container& container, const codeunit_sequence_view& separator) noexcept
 {
@@ -251,7 +282,7 @@ codeunit_sequence codeunit_sequence::join(const Container& container, const code
 	{
 		if(!result.is_empty())
 			result += separator;
-		result += element;
+		result.append(details::view_sequence(element));
 	}
 	return result;
 }
@@ -279,6 +310,8 @@ public:
 	static text from_utf16(const char16_t* str) noexcept;
 	static text from_utf32(const char32_t* str) noexcept;
 	
+	template<class...Args>
+	static text build(const Args&... argument);
 	template<typename Container>
 	static text join(const Container& container, const text_view& separator) noexcept;
 
@@ -407,7 +440,7 @@ public:
 	[[nodiscard]] text_view view_trim_end(const text_view& characters = text_view(" \t")) const noexcept;
 	[[nodiscard]] text_view view_trim(const text_view& characters = text_view(" \t")) const noexcept;
 
-	[[nodiscard]] uint32_t get_hash() const noexcept;
+	[[nodiscard]] u32 get_hash() const noexcept;
 
 	[[nodiscard]] const char* c_str() const noexcept;
 
@@ -417,54 +450,32 @@ private:
 	
 };
 
+namespace details
+{
+	template<>
+	[[nodiscard]] inline codeunit_sequence_view view_sequence<text_view>(const text_view& v)
+	{
+		return v.raw();
+	}
+	template<>
+	[[nodiscard]] inline codeunit_sequence_view view_sequence<text>(const text& v)
+	{
+		return v.view().raw();
+	}
+}
+
+template<class...Args>
+text text::build(const Args&... argument)
+{
+	return { codeunit_sequence::build(argument...) };
+}
+
 template<typename Container>
 text text::join(const Container& container, const text_view& separator) noexcept
 {
-	text result;
-	for (const auto& it : container)
-	{
-		if(!result.is_empty())
-			result += separator;
-		result += it;
-	}
-	return result;
+	return { codeunit_sequence::join(container, separator.raw()) };
 }
 
 [[nodiscard]] bool operator==(const text_view& lhs, const text& rhs) noexcept;
-
-#pragma region concatenate
-
-struct concatenation_builder
-{
-	concatenation_builder() noexcept;
-	concatenation_builder(concatenation_builder&& other) noexcept;
-	concatenation_builder(const concatenation_builder& other) noexcept = delete;
-	concatenation_builder& operator=(concatenation_builder&& other) noexcept = delete;
-	concatenation_builder& operator=(const concatenation_builder& other) noexcept = delete;
-	~concatenation_builder() noexcept;
-		
-	[[nodiscard]] concatenation_builder operator+(const char* str) && noexcept;
-	[[nodiscard]] concatenation_builder operator+(codeunit_sequence_view rhs) && noexcept;
-	[[nodiscard]] concatenation_builder operator+(const codeunit_sequence& rhs) && noexcept;
-	[[nodiscard]] concatenation_builder operator+(codeunit_sequence&& rhs) && noexcept;
-	[[nodiscard]] concatenation_builder operator+(text_view rhs) && noexcept;
-	[[nodiscard]] concatenation_builder operator+(const text& rhs) && noexcept;
-	[[nodiscard]] concatenation_builder operator+(text&& rhs) && noexcept;
-
-	[[nodiscard]] codeunit_sequence build_sequence() const && noexcept;
-	[[nodiscard]] operator codeunit_sequence() const && noexcept;
-	[[nodiscard]] operator text() const && noexcept;
-	
-	std::vector<codeunit_sequence> sequences;
-};
-
-template<class T1, class T2,
-	typename = decltype(text{ std::declval<T1>() }), typename = decltype(text{ std::declval<T2>() })>
-[[nodiscard]] concatenation_builder operator+(T1&& lhs, T2&& rhs) noexcept
-{
-	return concatenation_builder{ } + std::forward<T1>(lhs) + std::forward<T2>(rhs);
-}
-
-#pragma endregion concatenate
 
 NS_EASY_END

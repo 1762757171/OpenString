@@ -4,17 +4,18 @@
 // All rights reserved.
 
 #pragma once
+#include <cstddef>
+#include <tuple>
 #include "common/basic_types.h"
 #include "common/unicode.h"
 #include "common/definitions.h"
 #include "common/index_interval.h"
-#include <tuple>
 
 NS_EASY_BEGIN
 
 namespace details
 {
-	[[nodiscard]] constexpr i32 count_string_length(const char* str) noexcept
+	[[nodiscard]] constexpr i32 get_sequence_size(const char* str) noexcept
 	{
 		if(!str)
 			return 0;
@@ -74,7 +75,7 @@ namespace details
 			0xb40bbe37, 0xc30c8ea1, 0x5a05df1b, 0x2d02ef8d
 		};
 		
-		uint32_t ans = 0xFFFFFFFF;
+		u32 ans = 0xFFFFFFFF;
 		for (size_t i = 0; i < length; ++i)
 		{
 			ans = ((ans >> 8) ^ crc_table[(ans ^ data[i]) & 0x000000FF]);
@@ -112,7 +113,7 @@ public:
 	{ }
 
 	explicit constexpr codeunit_sequence_view(const char* str) noexcept
-		: codeunit_sequence_view(str, details::count_string_length(str))
+		: codeunit_sequence_view(str, details::get_sequence_size(str))
 	{ }
 
 	explicit constexpr codeunit_sequence_view(const char& c) noexcept

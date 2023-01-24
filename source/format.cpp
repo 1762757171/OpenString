@@ -107,9 +107,9 @@ codeunit_sequence details::format_integer(const i64& value, const codeunit_seque
 
 codeunit_sequence details::format_float(const float& value, const codeunit_sequence_view& specification)
 {
-    if (isinf(value))
+    if (std::isinf(value))
         return codeunit_sequence{ value < 0 ? "-inf"_cuqv : "inf"_cuqv };
-    if (isnan(value))
+    if (std::isnan(value))
         return codeunit_sequence{ "nan"_cuqv };
     i32 precision = -1;
     char type = 'g';

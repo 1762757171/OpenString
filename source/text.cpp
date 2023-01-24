@@ -3,6 +3,8 @@
 // Copyright (c) 2022 - present, [Hoshizora Ming]
 // All rights reserved.
 
+#include <algorithm>
+#include <memory.h>
 #include "text.h"
 #include "adapters.h"
 
@@ -689,7 +691,7 @@ codeunit_sequence_view codeunit_sequence::view_trim(const codeunit_sequence_view
 	return this->view().trim(characters);
 }
 
-uint32_t codeunit_sequence::get_hash() const noexcept
+u32 codeunit_sequence::get_hash() const noexcept
 {
 	return this->view().get_hash();
 }
@@ -1280,7 +1282,7 @@ text_view text::view_trim(const text_view& characters) const noexcept
 	return this->view().trim(characters);
 }
 
-uint32_t text::get_hash() const noexcept
+u32 text::get_hash() const noexcept
 {
 	return this->view().get_hash();
 }
@@ -1295,74 +1297,5 @@ bool operator==(const text_view& lhs, const text& rhs) noexcept
 	return rhs == lhs;
 }
 
-concatenation_builder::concatenation_builder() noexcept
-{
-	this->sequences.reserve(16);
-}
-
-concatenation_builder::concatenation_builder(concatenation_builder&& other) noexcept
-	: sequences(std::forward<std::vector<codeunit_sequence>>(other.sequences))
-{ }
-
-concatenation_builder::~concatenation_builder() noexcept = default;
-
-concatenation_builder concatenation_builder::operator+(const char* str) && noexcept
-{
-	this->sequences.emplace_back(str);
-	return std::forward<concatenation_builder>(*this);
-}
-
-concatenation_builder concatenation_builder::operator+(codeunit_sequence_view rhs) && noexcept
-{
-	this->sequences.emplace_back(rhs);
-	return std::forward<concatenation_builder>(*this);
-}
-
-concatenation_builder concatenation_builder::operator+(const codeunit_sequence& rhs) && noexcept
-{
-	this->sequences.push_back(rhs);
-	return std::forward<concatenation_builder>(*this);
-}
-
-concatenation_builder concatenation_builder::operator+(codeunit_sequence&& rhs) && noexcept
-{
-	this->sequences.push_back(std::forward<codeunit_sequence>(rhs));
-	return std::forward<concatenation_builder>(*this);
-}
-
-concatenation_builder concatenation_builder::operator+(const text_view rhs) && noexcept
-{
-	this->sequences.emplace_back(rhs.raw());
-	return std::forward<concatenation_builder>(*this);
-}
-
-concatenation_builder concatenation_builder::operator+(const text& rhs) && noexcept
-{
-	this->sequences.push_back(rhs.raw());
-	return std::forward<concatenation_builder>(*this);
-}
-
-concatenation_builder concatenation_builder::operator+(text&& rhs) && noexcept
-{
-	this->sequences.push_back(std::forward<text>(rhs).raw());
-	return std::forward<concatenation_builder>(*this);
-}
-
-codeunit_sequence concatenation_builder::build_sequence() const && noexcept
-{
-	return codeunit_sequence::join(this->sequences, { });
-}
-
-concatenation_builder::operator codeunit_sequence() const && noexcept
-{
-	return std::forward<const concatenation_builder>(*this).build_sequence();
-}
-
-concatenation_builder::operator text() const && noexcept
-{
-	return { std::forward<const concatenation_builder>(*this).build_sequence() };
-}
-
 NS_EASY_END
-
 

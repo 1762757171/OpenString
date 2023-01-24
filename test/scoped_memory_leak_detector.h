@@ -1,6 +1,6 @@
 #pragma once
 
-#ifdef _WIN32
+#ifdef _WIN64
 
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
