@@ -9,4 +9,3 @@
 #define NS_EASY_END		}
 
 #define EASY_EXPORT __declspec(dllexport)
-

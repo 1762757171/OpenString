@@ -1,6 +1,30 @@
 #include "format.h"
+#include "text.h"
 
 NS_EASY_BEGIN
+
+namespace details
+{
+    [[nodiscard]] constexpr i32 get_integer_digit_count(const i64 value, const i32 base)
+    {
+        if(value == 0)
+            return 1;
+        i64 remaining = value;
+        i32 count = 0;
+        while(remaining != 0)
+        {
+            remaining /= base;
+            ++count;
+        }
+        return count;
+    }
+
+    [[nodiscard]] constexpr char from_digit(const i64 digit)
+    {
+        constexpr char digits[] = "0123456789abcdef";
+        return digits[digit];
+    }
+}
 
 codeunit_sequence details::format_integer(const i64& value, const codeunit_sequence_view& specification)
 {
@@ -64,28 +88,29 @@ codeunit_sequence details::format_integer(const i64& value, const codeunit_seque
     if(!with_prefix)
         prefix = ""_cuqv;
     
-    char buffer[20];    // "-9223372036854775808"
-    const auto [ last, error ] = std::to_chars(buffer, buffer + sizeof(buffer), value, base);
-    const i32 used_size = static_cast<i32>(last - buffer);
-    codeunit_sequence result(prefix);
-    if(used_size < holding)
+    const codeunit_sequence_view sign = (value < 0) ? "-"_cuqv : ""_cuqv;
+    const i32 digit_count = details::get_integer_digit_count(value, base);
+    const i32 preserve = (holding > digit_count) ? holding : digit_count;
+    const i32 zero_count = preserve - digit_count;
+    codeunit_sequence result( sign.size() + prefix.size() + preserve );
+    result .append(sign) .append(prefix) .append('0', zero_count);
+    const i32 digits_start = result.size();
+    i64 remaining = value >= 0 ? value : -value;
+    for(i32 i = 0; i < digit_count; ++i)
     {
-        const i32 padding_size = holding - used_size;
-        result.reserve(holding + prefix.size());
-        for(i32 i = 0; i < padding_size; ++i)
-            result += '0';
-        result += codeunit_sequence_view{ buffer, last };
-        return result;
+        const char digit = details::from_digit(remaining % base); 
+        remaining /= base;
+        result.append(digit);
     }
-
-    return result + codeunit_sequence_view{ buffer, last };
+    result.reverse({ '[', digits_start, '~' });
+    return result;
 }
 
 codeunit_sequence details::format_float(const float& value, const codeunit_sequence_view& specification)
 {
-    if (isinf(value))
+    if (std::isinf(value))
         return codeunit_sequence{ value < 0 ? "-inf"_cuqv : "inf"_cuqv };
-    if (isnan(value))
+    if (std::isnan(value))
         return codeunit_sequence{ "nan"_cuqv };
     i32 precision = -1;
     char type = 'g';
@@ -112,37 +137,69 @@ codeunit_sequence details::format_float(const float& value, const codeunit_seque
         if(!parsing.is_empty())
             throw format_error("Invalid format specification [{}]!"_cuqv, specification);
     }
-    std::chars_format format = std::chars_format::general;
     switch (type) 
     {
     case 'a':
-        format = std::chars_format::hex;
         break;
     case 'e':
-        format = std::chars_format::scientific;
         break;
     case 'f':
-        format = std::chars_format::fixed;
         break;
     case 'g':
-        format = std::chars_format::general;
         break;
     default:
         break;
     }
-    if(precision == -1)
-    {    
-        // float has a max length of 16 characters: "-3.402823466e+38".
-        char buffer[16];
-        const auto [ last, error ] = std::to_chars(buffer, buffer + sizeof(buffer), value, format);
-        return codeunit_sequence{ buffer, last };
-    }
     static constexpr i32 max_precision = 9;
     if(precision > max_precision)
         throw format_error("Too high precision for float [{}]!"_cuqv, precision);
-    char buffer[max_precision];
-    const auto [ last, error] = std::to_chars(buffer, buffer + sizeof(buffer), value, format, precision);
-    return codeunit_sequence{ buffer, last };
+    codeunit_sequence result;
+    const bool negative = value < 0;
+    if(negative)
+        result.append("-");
+    float remaining = negative ? -value : value;
+    const i32 decimal = static_cast<i32>(remaining);
+    result.append(format_integer(decimal, { }));
+    remaining -= decimal;
+    static constexpr float epsilon = 1e-3f;
+    if(precision == -1)
+    {
+        i32 floating = 1;
+        while(true)
+        {
+            remaining *= 10;
+            floating *= 10;
+            const i32 ones = static_cast<i32>(remaining);
+            floating += ones;
+            remaining -= ones;
+            if(remaining < epsilon && remaining > -epsilon)
+                break;
+        }
+        if(floating > 10)
+        {
+            const i32 dot_position = result.size();
+            result
+            .append(format_integer(floating, { }))
+            .write_at(dot_position, '.');
+        }
+    }
+    else 
+    {
+        i32 floating = 1;
+        for(i32 i = 0; i < precision; ++i)
+        {
+            remaining *= 10;
+            floating *= 10;
+            const i32 ones = static_cast<i32>(remaining);
+            floating += ones;
+            remaining -= ones;
+        }
+        const i32 dot_position = result.size();
+        result
+        .append(format_integer(floating, { }))
+        .write_at(dot_position, '.');
+    }
+    return result;
 }
 
 NS_EASY_END

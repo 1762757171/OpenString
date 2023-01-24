@@ -31,13 +31,13 @@ TEST(text, concatenate)
 {
 	SCOPED_DETECT_MEMORY_LEAK
 	{
-		const text result = "Hello " + "World!"_txtv;
+		const text result = text::build("Hello ", "World!"_txtv);
 		EXPECT_EQ(result, "Hello World!");
 	}
 	{
 		const text txt_ai("😘");
 
-		const text combine =  "我" + " very "_txtv + txt_ai + "あなた"_txtv + "!";
+		const text combine = text::build("我", " very "_txtv, txt_ai, "あなた"_txtv, "!");
 		const text correct("我 very 😘あなた!");
 
 		EXPECT_EQ(combine, correct);

@@ -20,7 +20,7 @@ namespace unicode
 	{
 		if (c == 0)
 			return 1;
-		constexpr u8 mask = 0b10000000i8;
+		constexpr char mask = 0b10000000_as_char;
 		i32 size = 0;
 		u8 v = c;
 		while (v & mask)
@@ -43,11 +43,11 @@ namespace unicode
 	{
 		constexpr char masks[] =
 		{
-			0b00111111i8,
-			0b01111111i8,
-			0b00011111i8,
-			0b00001111i8,
-			0b00000111i8,
+			0b00111111_as_char,
+			0b01111111_as_char,
+			0b00011111_as_char,
+			0b00001111_as_char,
+			0b00000111_as_char,
 		};
 		return masks[length];
 	}
@@ -117,7 +117,7 @@ struct codepoint
 	static constexpr i32 sequence_length = 4;
 	std::array<char, sequence_length> sequence;
 
-#pragma region constructors
+// code-region-start: constructors
 	
 	explicit constexpr codepoint(const char v0 = 0, const char v1 = 0, const char v2 = 0, const char v3 = 0) noexcept
 		: sequence({ v0, v1, v2, v3 })
@@ -138,9 +138,9 @@ struct codepoint
 		: sequence(unicode::utf32_to_utf8(cp))
 	{ }
 
-#pragma endregion constructors
+// code-region-end: constructors
 
-#pragma region iterators
+// code-region-start: iterators
 
 	struct const_iterator
 	{
@@ -269,7 +269,7 @@ struct codepoint
 		return this->end();
 	}
 
-#pragma endregion iterators
+// code-region-end: iterators
 
 	[[nodiscard]] constexpr bool operator==(const codepoint& rhs) const noexcept
 	{

@@ -6,6 +6,7 @@
 // All rights reserved.
 
 #pragma once
+#include <cstddef>
 #include "common/definitions.h"
 
 NS_EASY_BEGIN

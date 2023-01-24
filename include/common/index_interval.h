@@ -100,7 +100,7 @@ public:
 		return { '[', 0, size, ')' };
 	}
 
-#pragma region iterators
+// code-region-start: iterators
 
 	struct const_iterator
 	{
@@ -225,7 +225,7 @@ public:
 		return this->end();
 	}
 
-#pragma endregion iterators
+// code-region-end: iterators
 
 	[[nodiscard]] constexpr i32 operator[](const i32 index) const noexcept
 	{

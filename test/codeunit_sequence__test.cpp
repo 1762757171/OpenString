@@ -72,11 +72,9 @@ TEST(codeunit_sequence, concatenate)
 {
 	SCOPED_DETECT_MEMORY_LEAK
 	{
-		constexpr char code_unit_array_wo[] = { '\xe6', '\x88', '\x91', '\0' };
-		const codeunit_sequence cuq_wo(code_unit_array_wo);
 		const codeunit_sequence cuq_ai("😘");
 
-		const codeunit_sequence combine = cuq_wo + cuq_ai + cuq_ai + codeunit_sequence("あなた") + "!"_cuqv;
+		const codeunit_sequence combine = codeunit_sequence::build("我", cuq_ai, cuq_ai, codeunit_sequence("あなた"), "!"_cuqv);
 		const codeunit_sequence correct("我😘😘あなた!");
 
 		EXPECT_EQ(combine, correct);

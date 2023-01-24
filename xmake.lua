@@ -3,7 +3,7 @@ set_warnings("all", "error")
 set_languages("c++17")
 
 add_requires("gtest")
-add_requires("benchmark")
+-- add_requires("benchmark")
 
 cxflags = {}
 
@@ -26,13 +26,13 @@ target("test")
     add_deps("OpenString")
     add_files("test/*.cpp")
 
-target("benchmark")
-    set_kind("binary")
-    add_cxflags(cxflags, {force = true})
-    add_packages("benchmark")
-    add_includedirs("include")
-    add_deps("OpenString")
-    add_files("benchmark/*.cpp")
+-- target("benchmark")
+--     set_kind("binary")
+--     add_cxflags(cxflags, {force = true})
+--     add_packages("benchmark")
+--     add_includedirs("include")
+--     add_deps("OpenString")
+--     add_files("benchmark/*.cpp")
 
 --
 -- If you want to known more usage about xmake, please see https://xmake.io
