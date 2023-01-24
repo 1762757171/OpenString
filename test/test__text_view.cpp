@@ -1,5 +1,4 @@
 #include "pch.h"
-#include "gtest_printers_extension.h"
 #include "text_view.h"
 
 using namespace easy;

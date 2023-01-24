@@ -4,14 +4,12 @@
 // All rights reserved.
 
 #pragma once
-#include "common/definitions.h"
-#include "common/index_interval.h"
-#include "common/basic_types.h"
-#include "text.h"
+
 #include <array>
 #include <cmath>
 #include <stdexcept>
 #include <charconv>
+#include "codeunit_sequence.h"
 
 NS_EASY_BEGIN
 
@@ -41,10 +39,6 @@ namespace details
 
         explicit constexpr format_view(const codeunit_sequence_view& format) noexcept
             : format_(format)
-        { }
-
-        explicit constexpr format_view(const text_view& format) noexcept
-            : format_(format.raw())
         { }
 
     // code-region-end: constructors
@@ -238,16 +232,10 @@ namespace details
     }
 }
 
-template<class...Args>
-[[nodiscard]] codeunit_sequence format(const codeunit_sequence_view& format_literal, Args&&...args)
+template<class Format, class...Args>
+[[nodiscard]] codeunit_sequence format(const Format& format_literal, Args&&...args)
 {
-    return details::format(details::format_view{ format_literal }, args...);
-}
-
-template<class...Args>
-[[nodiscard]] text format(const text_view& format_literal, Args&&...args)
-{
-    return { details::format(details::format_view{ format_literal }, args...) };
+    return details::format(details::format_view{ details::view_sequence(format_literal) }, args...);
 }
 
 // code-region-start: formatter specializations for built-in types
@@ -361,24 +349,6 @@ struct formatter<codeunit_sequence>
     static const codeunit_sequence& format_argument(const codeunit_sequence& value, const codeunit_sequence_view& specification)
     {
         return value;
-    }
-};
-
-template<> 
-struct formatter<text_view>
-{
-    static codeunit_sequence format_argument(const text_view& value, const codeunit_sequence_view& specification)
-    {
-        return codeunit_sequence{ value.raw() };
-    }
-};
-
-template<> 
-struct formatter<text>
-{
-    static codeunit_sequence format_argument(const text& value, const codeunit_sequence_view& specification)
-    {
-        return value.raw();
     }
 };
 

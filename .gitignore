@@ -2,6 +2,9 @@
 .xmake/
 build/
 
+# Clangd cache
+.cache/clangd/
+
 # Build files
 x64/
 
