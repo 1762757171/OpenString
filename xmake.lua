@@ -5,24 +5,15 @@ set_languages("c++17")
 add_requires("gtest")
 -- add_requires("benchmark")
 
-cxflags = {}
-
-if is_host("windows") then
-    if has_config("is_msvc") then 
-        table.insert(cxflags, "/execution-charset:utf-8")
-        table.insert(cxflags, "/source-charset:utf-8")
-    end
-end
+add_cxxflags("cl::/utf-8*", {force = true})
 
 target("OpenString")
     set_kind("static")
-    add_cxflags(cxflags, {force = true})
     add_includedirs("include")
     add_files("source/*.cpp")
 
 target("test")
     set_kind("binary")
-    add_cxflags(cxflags, {force = true})
     add_packages("gtest")
     add_includedirs("include")
     add_deps("OpenString")
