@@ -5,7 +5,7 @@ set_languages("c++17")
 add_requires("gtest")
 -- add_requires("benchmark")
 
-add_cxxflags("cl::/utf-8*", {force = true})
+add_cxxflags("cl::/utf-8", {force = true})
 
 target("OpenString")
     set_kind("static")
