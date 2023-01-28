@@ -33,7 +33,7 @@ public:
 	scoped_memory_leak_detector& operator=(scoped_memory_leak_detector&&) = delete;
 	
 private:
-	_CrtMemState memory_state_ {  };
+	[[maybe_unused]] _CrtMemState memory_state_ {  };
 	const char* filename_;
 	int line_;
 };

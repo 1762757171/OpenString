@@ -8,8 +8,10 @@ add_requires("gtest")
 cxflags = {}
 
 if is_host("windows") then
-    table.insert(cxflags, "/execution-charset:utf-8")
-    table.insert(cxflags, "/source-charset:utf-8")
+    if has_config("is_msvc") then 
+        table.insert(cxflags, "/execution-charset:utf-8")
+        table.insert(cxflags, "/source-charset:utf-8")
+    end
 end
 
 target("OpenString")
