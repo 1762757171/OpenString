@@ -47,7 +47,6 @@ todo
 - Folder directory path library
 - A ``name`` class for easy copying and comparing
 - Localization support
-- Log support
 
 ## Thanks
 
