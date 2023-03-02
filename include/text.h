@@ -8,9 +8,9 @@
 #include "text_view.h"
 #include "codeunit_sequence.h"
 
-NS_EASY_BEGIN
+OPEN_STRING_NS_BEGIN
 
-class text
+class OPEN_STRING_API text
 {
 public:
 
@@ -208,4 +208,4 @@ struct formatter<text>
     }
 };
 
-NS_EASY_END
+OPEN_STRING_NS_END

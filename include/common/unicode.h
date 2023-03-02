@@ -8,7 +8,7 @@
 #include "basic_types.h"
 #include <array>
 
-NS_EASY_BEGIN
+OPEN_STRING_NS_BEGIN
 
 namespace unicode
 {
@@ -330,7 +330,7 @@ struct codepoint
 	return rhs == lhs;
 }
 
-NS_EASY_END
+OPEN_STRING_NS_END
 
 inline namespace literal
 {

@@ -7,7 +7,7 @@
 #include "common/index_interval.h"
 #include "common/unicode.h"
 
-NS_EASY_BEGIN
+OPEN_STRING_NS_BEGIN
 
 namespace details
 {
@@ -520,7 +520,7 @@ private:
 
 };
 
-NS_EASY_END
+OPEN_STRING_NS_END
 
 inline namespace literal
 {

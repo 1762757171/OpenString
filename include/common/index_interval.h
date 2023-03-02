@@ -8,7 +8,7 @@
 #include "basic_types.h"
 #include <limits>
 
-NS_EASY_BEGIN
+OPEN_STRING_NS_BEGIN
 
 class index_interval
 {
@@ -364,4 +364,4 @@ protected:
 	
 };
 
-NS_EASY_END
+OPEN_STRING_NS_END

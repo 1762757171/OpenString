@@ -8,7 +8,7 @@
 #include "codeunit_sequence_view.h"
 #include "format.h"
 
-NS_EASY_BEGIN
+OPEN_STRING_NS_BEGIN
 
 // UTF-8 encoded string
 class text_view
@@ -435,7 +435,7 @@ struct formatter<text_view>
     }
 };
 
-NS_EASY_END
+OPEN_STRING_NS_END
 
 inline namespace literal
 {

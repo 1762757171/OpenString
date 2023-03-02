@@ -1,7 +1,7 @@
 #include "format.h"
 #include "text.h"
 
-NS_EASY_BEGIN
+OPEN_STRING_NS_BEGIN
 
 namespace details
 {
@@ -202,4 +202,4 @@ codeunit_sequence details::format_float(const float& value, const codeunit_seque
     return result;
 }
 
-NS_EASY_END
+OPEN_STRING_NS_END
