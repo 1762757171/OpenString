@@ -3,9 +3,9 @@
 #include <vector>
 #include "codeunit_sequence_view.h"
 
-NS_EASY_BEGIN
+OPEN_STRING_NS_BEGIN
 
-class codeunit_sequence
+class OPEN_STRING_API codeunit_sequence
 {
 public:
 
@@ -282,4 +282,4 @@ codeunit_sequence codeunit_sequence::join(const Container& container, const code
 
 [[nodiscard]] bool operator==(const codeunit_sequence_view& lhs, const codeunit_sequence& rhs) noexcept;
 
-NS_EASY_END
+OPEN_STRING_NS_END

@@ -6,7 +6,7 @@
 #pragma once
 #include "definitions.h"
 
-NS_EASY_BEGIN
+OPEN_STRING_NS_BEGIN
 
 using i8 = signed char;
 using u8 = unsigned char;
@@ -19,7 +19,7 @@ using u64 = unsigned long long;
 
 inline constexpr i32 index_invalid = -1;
 
-NS_EASY_END
+OPEN_STRING_NS_END
 
 inline namespace literal
 {

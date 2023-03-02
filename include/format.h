@@ -11,7 +11,7 @@
 #include <charconv>
 #include "codeunit_sequence.h"
 
-NS_EASY_BEGIN
+OPEN_STRING_NS_BEGIN
 
 class format_error final : public std::runtime_error
 {
@@ -242,8 +242,8 @@ template<class Format, class...Args>
 
 namespace details
 {
-    codeunit_sequence format_integer(const i64& value, const codeunit_sequence_view& specification);
-    codeunit_sequence format_float(const float& value, const codeunit_sequence_view& specification);
+    codeunit_sequence OPEN_STRING_API format_integer(const i64& value, const codeunit_sequence_view& specification);
+    codeunit_sequence OPEN_STRING_API format_float(const float& value, const codeunit_sequence_view& specification);
 }
 
 template<> 
@@ -397,4 +397,4 @@ codeunit_sequence formatter<T>::format_argument(const T& value, const codeunit_s
     throw format_error(message.view());
 }
 
-NS_EASY_END
+OPEN_STRING_NS_END

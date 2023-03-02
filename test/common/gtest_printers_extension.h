@@ -4,7 +4,7 @@
 #include "text.h"
 #include "format.h"
 
-NS_EASY_BEGIN
+OPEN_STRING_NS_BEGIN
 
 inline std::ostream& operator<<(std::ostream& os, const codeunit_sequence_view& v)
 {
@@ -52,4 +52,4 @@ DEFINE_PRINT_TO(text)
 
 #undef DEFINE_PRINT_TO
 
-NS_EASY_END
+OPEN_STRING_NS_END

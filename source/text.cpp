@@ -8,7 +8,7 @@
 #include "text.h"
 #include "adapters.h"
 
-NS_EASY_BEGIN
+OPEN_STRING_NS_BEGIN
 
 text::text() noexcept = default;
 text::text(const text&) noexcept = default;
@@ -529,5 +529,5 @@ bool operator==(const text_view& lhs, const text& rhs) noexcept
 	return rhs == lhs;
 }
 
-NS_EASY_END
+OPEN_STRING_NS_END
 

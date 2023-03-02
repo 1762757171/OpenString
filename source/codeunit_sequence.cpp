@@ -4,7 +4,7 @@
 #include "codeunit_sequence.h"
 #include "adapters.h"
 
-NS_EASY_BEGIN
+OPEN_STRING_NS_BEGIN
 
 namespace details
 {
@@ -776,4 +776,4 @@ bool operator==(const codeunit_sequence_view& lhs, const codeunit_sequence& rhs)
 	return rhs == lhs;
 }
 
-NS_EASY_END
+OPEN_STRING_NS_END

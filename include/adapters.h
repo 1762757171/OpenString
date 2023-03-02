@@ -9,7 +9,7 @@
 #include <cstddef>
 #include "common/definitions.h"
 
-NS_EASY_BEGIN
+OPEN_STRING_NS_BEGIN
 
 template<class T>
 struct allocator
@@ -35,4 +35,4 @@ struct allocator
 	}
 };
 
-NS_EASY_END
+OPEN_STRING_NS_END
