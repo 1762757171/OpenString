@@ -1,11 +1,13 @@
+
 #include "pch.h"
+
 #include "text.h"
 
-using namespace easy;
+using namespace ostr;
 
 TEST(text, construct)
 {
-	SCOPED_DETECT_MEMORY_LEAK
+	SCOPED_DETECT_MEMORY_LEAK()
 	{
 		const text t;
 		EXPECT_TRUE(t.is_empty());
@@ -29,7 +31,7 @@ TEST(text, construct)
 
 TEST(text, concatenate)
 {
-	SCOPED_DETECT_MEMORY_LEAK
+	SCOPED_DETECT_MEMORY_LEAK()
 	{
 		const text result = text::build("Hello ", "World!"_txtv);
 		EXPECT_EQ(result, "Hello World!");
@@ -46,9 +48,9 @@ TEST(text, concatenate)
 
 TEST(text, join)
 {
-	SCOPED_DETECT_MEMORY_LEAK
+	SCOPED_DETECT_MEMORY_LEAK()
 	{
-		const std::vector<text_view> views = { "This"_txtv, "is"_txtv, "a"_txtv, "very"_txtv, "very"_txtv, "long"_txtv, "text"_txtv };
+		const sequence<text_view> views = { "This"_txtv, "is"_txtv, "a"_txtv, "very"_txtv, "very"_txtv, "long"_txtv, "text"_txtv };
 		const text joined_1 = text::join(views, "/**/"_txtv);
 		EXPECT_EQ(joined_1, "This/**/is/**/a/**/very/**/very/**/long/**/text"_txtv);
 		const text joined_2 = text::join(views, ""_txtv);
@@ -58,19 +60,19 @@ TEST(text, join)
 
 TEST(text, reverse)
 {
-	SCOPED_DETECT_MEMORY_LEAK
+	SCOPED_DETECT_MEMORY_LEAK()
 	{
 		text t("你好a😙😙你");
 		t.reverse();
 		EXPECT_EQ(t, "你😙😙a好你"_txtv);
-		t.reverse({ '[', 1, -2, ')' });
+		t.reverse(1, 3);
 		EXPECT_EQ(t, "你a😙😙好你"_txtv);
 	}
 }
 
 TEST(text, replace)
 {
-	SCOPED_DETECT_MEMORY_LEAK
+	SCOPED_DETECT_MEMORY_LEAK()
 	{
 		text t("你好😙😙你");
 		t.write_at(2, 'a'_cp);
@@ -78,7 +80,7 @@ TEST(text, replace)
 	}
 	{
 		const text t("0123456789");
-		i32 n = 0;
+		u64 n = 0;
 		for(const auto cp : t)
 		{
 			EXPECT_EQ(cp.size(), 1);
@@ -88,7 +90,7 @@ TEST(text, replace)
 	}
 	{
 		text t("0123456789");
-		i32 n = 0;
+		u64 n = 0;
 		for(auto cp : t)
 		{
 			if(n == 6)
@@ -104,7 +106,7 @@ TEST(text, replace)
 
 TEST(text, remove_prefix_suffix)
 {
-	SCOPED_DETECT_MEMORY_LEAK
+	SCOPED_DETECT_MEMORY_LEAK()
 	{
 		text t = "She says: 你好😙"_txtv;
 		t.self_remove_prefix("He says:");
@@ -118,7 +120,7 @@ TEST(text, remove_prefix_suffix)
 
 TEST(text, trim)
 {
-	SCOPED_DETECT_MEMORY_LEAK
+	SCOPED_DETECT_MEMORY_LEAK()
 	{
 		text t("");
 		EXPECT_TRUE(t.self_trim_start().is_empty());

@@ -51,7 +51,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);WIN32_LEAN_AND_MEAN;NOMINMAX</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -78,26 +78,26 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\test\main.cpp" />
-    <ClCompile Include="..\test\test__codeunit_sequence.cpp" />
-    <ClCompile Include="..\test\test__codeunit_sequence_view.cpp" />
-    <ClCompile Include="..\test\test__format.cpp" />
-    <ClCompile Include="..\test\test__index_interval.cpp" />
-    <ClCompile Include="..\test\test__text.cpp" />
-    <ClCompile Include="..\test\test__text_view.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\test\common\gtest_printers_extension.h" />
-    <ClInclude Include="..\test\common\scoped_memory_leak_detector.h" />
-    <ClInclude Include="..\test\pch.h" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="OpenString.vcxproj">
       <Project>{16bbf1b5-af6e-4b3d-a507-1c24cb0e3285}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\test\gtest_printers_extension.h" />
+    <ClInclude Include="..\test\pch.h" />
+    <ClInclude Include="..\test\scoped_memory_leak_detector.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\test\main.cpp" />
+    <ClCompile Include="..\test\test__codeunit_sequence.cpp" />
+    <ClCompile Include="..\test\test__codeunit_sequence_view.cpp" />
+    <ClCompile Include="..\test\test__format.cpp" />
+    <ClCompile Include="..\test\test__text.cpp" />
+    <ClCompile Include="..\test\test__text_view.cpp" />
+    <ClCompile Include="..\test\test__wide_text.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

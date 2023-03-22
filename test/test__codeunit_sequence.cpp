@@ -1,15 +1,14 @@
+
 // ReSharper disable StringLiteralTypo
 #include "pch.h"
-#include "common/index_interval.h"
-#include "text.h"
 
-using namespace easy;
+using namespace ostr;
 
 // this is a struct that has same memory layout as struct codeunit_sequence
 // convert the pointer of struct codeunit_sequence to this struct and access the private members.
 struct codeunit_sequence_accessor
 {
-	static constexpr i32 SSO_SIZE_MAX = 14;
+	static constexpr u64 SSO_SIZE_MAX = 14;
 
 	struct sso
 	{
@@ -21,8 +20,8 @@ struct codeunit_sequence_accessor
 	struct norm
 	{
 		u32 alloc : 1;
-		i32 size : 15;
-		i32 capacity;
+		u32 size : 15;
+		u32 capacity;
 		char* data;
 	};
 
@@ -57,7 +56,7 @@ struct codeunit_sequence_accessor
 
 TEST(codeunit_sequence, construct)
 {
-	SCOPED_DETECT_MEMORY_LEAK
+	SCOPED_DETECT_MEMORY_LEAK()
 	
 	const codeunit_sequence cuq_default_ctor;
 	const codeunit_sequence cuq_ctor_supplement("𪚥😁");
@@ -70,7 +69,7 @@ TEST(codeunit_sequence, construct)
 
 TEST(codeunit_sequence, concatenate)
 {
-	SCOPED_DETECT_MEMORY_LEAK
+	SCOPED_DETECT_MEMORY_LEAK()
 	{
 		const codeunit_sequence cuq_ai("😘");
 
@@ -83,19 +82,19 @@ TEST(codeunit_sequence, concatenate)
 
 TEST(codeunit_sequence, split)
 {
-	SCOPED_DETECT_MEMORY_LEAK
+	SCOPED_DETECT_MEMORY_LEAK()
 	{
-		const codeunit_sequence sequence("This        is   a long string"_cuqv);
+		const codeunit_sequence s("This        is   a long string"_cuqv);
 		std::vector<codeunit_sequence_view> result;
-		sequence.split(" "_cuqv, result);
-		const std::vector answer { "This"_cuqv, "is"_cuqv, "a"_cuqv, "long"_cuqv, "string"_cuqv };
+		s.split(" "_cuqv, result);
+		const std::vector<codeunit_sequence_view> answer { "This"_cuqv, "is"_cuqv, "a"_cuqv, "long"_cuqv, "string"_cuqv };
 		EXPECT_EQ(result, answer);
 	}
 }
 
 TEST(codeunit_sequence, trim)
 {
-	SCOPED_DETECT_MEMORY_LEAK
+	SCOPED_DETECT_MEMORY_LEAK()
 	{ 
 		{
 			codeunit_sequence cuq_src("   123 1234    ");
@@ -190,7 +189,7 @@ TEST(codeunit_sequence, trim)
 
 TEST(codeunit_sequence, empty)
 {
-	SCOPED_DETECT_MEMORY_LEAK
+	SCOPED_DETECT_MEMORY_LEAK()
 	{
 		codeunit_sequence cuq("12345");
 		cuq.empty(50);
@@ -218,7 +217,7 @@ TEST(codeunit_sequence, empty)
 
 TEST(codeunit_sequence, reserve)
 {
-	SCOPED_DETECT_MEMORY_LEAK
+	SCOPED_DETECT_MEMORY_LEAK()
 	{
 		codeunit_sequence cuq("12345");
 		const codeunit_sequence_accessor* accessor = ACCESS(cuq);
@@ -248,44 +247,44 @@ TEST(codeunit_sequence, reserve)
 
 TEST(codeunit_sequence, index)
 {
-	SCOPED_DETECT_MEMORY_LEAK
+	SCOPED_DETECT_MEMORY_LEAK()
 	{
 		const codeunit_sequence cuq("abbabbabbabbab");
 		EXPECT_EQ(cuq.index_of("ab"_cuqv), 0);
-		EXPECT_EQ(cuq.index_of("ab"_cuqv, { '[', 3, 8, ')' }), 3);
-		EXPECT_EQ(cuq.index_of("ab"_cuqv, { '[', 5, 8, ')' }), 6);
-		EXPECT_EQ(cuq.index_of("ab"_cuqv, { '[', 5, 6, ']' }), index_invalid);
+		EXPECT_EQ(cuq.index_of("ab"_cuqv, 3, 5), 3);
+		EXPECT_EQ(cuq.index_of("ab"_cuqv, 5, 3), 6);
+		EXPECT_EQ(cuq.index_of("ab"_cuqv, 5, 2), global_constant::INDEX_INVALID);
 	}
 	{
 		const codeunit_sequence cuq("abcab");
 		EXPECT_EQ(cuq.last_index_of("ab"_cuqv), 3);
-		EXPECT_EQ(cuq.last_index_of("a"_cuqv, { '[', 0, 2, ')' }), 0);
+		EXPECT_EQ(cuq.last_index_of("a"_cuqv, 0, 2), 0);
 	}
 }
 
 TEST(codeunit_sequence, replace)
 {
-	SCOPED_DETECT_MEMORY_LEAK
+	SCOPED_DETECT_MEMORY_LEAK()
 	// same size
 	{
 		{
 			codeunit_sequence cuq("abbabbabbabbab");
-			EXPECT_EQ(cuq.replace("ab"_cuqv, "ba"_cuqv), "babbabbabbabba"_cuqv);
+			EXPECT_EQ(cuq.replace("ba"_cuqv, "ab"_cuqv), "babbabbabbabba"_cuqv);
 		}
 		{
 			codeunit_sequence cuq("abbabbabbabbab");
-			EXPECT_EQ(cuq.replace("ab"_cuqv, "ba"_cuqv, { '[', 4, 10, ')' }), "abbabbbababbab"_cuqv);
+			EXPECT_EQ(cuq.replace("ba"_cuqv, "ab"_cuqv, 4, 6), "abbabbbababbab"_cuqv);
 		}
 	}
 	// smaller size
 	{
 		{
 			codeunit_sequence cuq("abbabbabbabbab");
-			EXPECT_EQ(cuq.replace("ab"_cuqv, "a"_cuqv), "ababababa"_cuqv);
+			EXPECT_EQ(cuq.replace("a"_cuqv, "ab"_cuqv), "ababababa"_cuqv);
 		}
 		{
 			codeunit_sequence cuq("abbabbabbabbab");
-			EXPECT_EQ(cuq.replace("ab"_cuqv, "a"_cuqv, { '[', 4, 10, ')' }), "abbabbababbab"_cuqv);
+			EXPECT_EQ(cuq.replace("a"_cuqv, "ab"_cuqv, 4, 6), "abbabbababbab"_cuqv);
 		}
 	}
 	// greater size
@@ -293,25 +292,25 @@ TEST(codeunit_sequence, replace)
 		{
 			{
 				codeunit_sequence cuq("abbabbabbabbab");
-				EXPECT_EQ(cuq.replace("ab"_cuqv, "aabb"_cuqv), "aabbbaabbbaabbbaabbbaabb"_cuqv);
-				EXPECT_EQ(cuq.replace("b"_cuqv, "aabb"_cuqv), "aaaabbaabbaabbaaaabbaabbaabbaaaabbaabbaabbaaaabbaabbaabbaaaabbaabb"_cuqv);
+				EXPECT_EQ(cuq.replace("aabb"_cuqv, "ab"_cuqv), "aabbbaabbbaabbbaabbbaabb"_cuqv);
+				EXPECT_EQ(cuq.replace("aabb"_cuqv, "b"_cuqv), "aaaabbaabbaabbaaaabbaabbaabbaaaabbaabbaabbaaaabbaabbaabbaaaabbaabb"_cuqv);
 			}
 			{
 				codeunit_sequence cuq("abbabbabbabbab");
-				EXPECT_EQ(cuq.replace("ab"_cuqv, "aabb"_cuqv, { '[', 4, 10, ')' }), "abbabbaabbbabbab"_cuqv);
-				EXPECT_EQ(cuq.replace("b"_cuqv, "aabb"_cuqv, { '[', 6, 100, ')' }), "abbabbaaaabbaabbaabbaaabbaabbaaabb"_cuqv);
+				EXPECT_EQ(cuq.replace("aabb"_cuqv, "ab"_cuqv, 4, 6), "abbabbaabbbabbab"_cuqv);
+				EXPECT_EQ(cuq.replace("aabb"_cuqv, "b"_cuqv, 6, 100), "abbabbaaaabbaabbaabbaaabbaabbaaabb"_cuqv);
 			}
 		}
 		{
 			{
 				codeunit_sequence cuq("This is a long string.");
-				EXPECT_EQ(cuq.replace("long"_cuqv, "short"_cuqv), "This is a short string."_cuqv);
-				EXPECT_EQ(cuq.replace("is"_cuqv, "isn't"_cuqv), "Thisn't isn't a short string."_cuqv);
+				EXPECT_EQ(cuq.replace("short"_cuqv, "long"_cuqv), "This is a short string."_cuqv);
+				EXPECT_EQ(cuq.replace("isn't"_cuqv, "is"_cuqv), "Thisn't isn't a short string."_cuqv);
 			}
 			{
 				codeunit_sequence cuq("This is a long string.");
-				EXPECT_EQ(cuq.replace("is"_cuqv, "short"_cuqv, { '[', 3, 6, ')' }), "This is a long string."_cuqv);
-				EXPECT_EQ(cuq.replace("is"_cuqv, "short"_cuqv, { '[', 3, 6, ']' }), "This short a long string."_cuqv);
+				EXPECT_EQ(cuq.replace("short"_cuqv, "is"_cuqv, 3, 3), "This is a long string."_cuqv);
+				EXPECT_EQ(cuq.replace("short"_cuqv, "is"_cuqv, 3, 4), "This short a long string."_cuqv);
 			}
 		}
 	}
@@ -319,9 +318,9 @@ TEST(codeunit_sequence, replace)
 
 TEST(codeunit_sequence, join)
 {
-	SCOPED_DETECT_MEMORY_LEAK
+	SCOPED_DETECT_MEMORY_LEAK()
 	{
-		const std::vector<codeunit_sequence_view> views = { "This"_cuqv, "is"_cuqv, "a"_cuqv, "very"_cuqv, "very"_cuqv, "long"_cuqv, "text"_cuqv };
+		const sequence<codeunit_sequence_view> views = { "This"_cuqv, "is"_cuqv, "a"_cuqv, "very"_cuqv, "very"_cuqv, "long"_cuqv, "text"_cuqv };
 		const codeunit_sequence joined_1 = codeunit_sequence::join(views, "/**/"_cuqv);
 		EXPECT_EQ(joined_1, "This/**/is/**/a/**/very/**/very/**/long/**/text"_cuqv);
 		const codeunit_sequence joined_2 = codeunit_sequence::join(views, ""_cuqv);

@@ -1,3 +1,4 @@
+
 #pragma once
 
 #ifdef _WIN64
@@ -38,10 +39,10 @@ private:
 	int line_;
 };
 
-#define SCOPED_DETECT_MEMORY_LEAK scoped_memory_leak_detector detector{ __FILE__, __LINE__ };
+#define SCOPED_DETECT_MEMORY_LEAK() scoped_memory_leak_detector detector{ __FILE__, __LINE__ };
 
 #else
 
-#define SCOPED_DETECT_MEMORY_LEAK
+#define SCOPED_DETECT_MEMORY_LEAK()
 
 #endif

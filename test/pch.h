@@ -1,5 +1,7 @@
+
 #pragma once
 
-#include "common/scoped_memory_leak_detector.h"
+#include "scoped_memory_leak_detector.h"
 #include "gtest/gtest.h"
-#include "common/gtest_printers_extension.h"
+#include "gtest_printers_extension.h"
+#include "common/definitions.h"

@@ -51,7 +51,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);WIN32_LEAN_AND_MEAN;NOMINMAX</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>
@@ -79,22 +79,28 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\include\adapters.h" />
     <ClInclude Include="..\include\codeunit_sequence.h" />
     <ClInclude Include="..\include\codeunit_sequence_view.h" />
+    <ClInclude Include="..\include\common\adapters.h" />
+    <ClInclude Include="..\include\common\assertion.h" />
     <ClInclude Include="..\include\common\basic_types.h" />
+    <ClInclude Include="..\include\common\constants.h" />
     <ClInclude Include="..\include\common\definitions.h" />
-    <ClInclude Include="..\include\common\index_interval.h" />
+    <ClInclude Include="..\include\common\functions.h" />
+    <ClInclude Include="..\include\common\linear_iterator.h" />
     <ClInclude Include="..\include\common\platforms.h" />
-    <ClInclude Include="..\include\common\unicode.h" />
+    <ClInclude Include="..\include\common\sequence.h" />
     <ClInclude Include="..\include\format.h" />
     <ClInclude Include="..\include\text.h" />
     <ClInclude Include="..\include\text_view.h" />
+    <ClInclude Include="..\include\unicode.h" />
+    <ClInclude Include="..\include\wide_text.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\codeunit_sequence.cpp" />
     <ClCompile Include="..\source\format.cpp" />
     <ClCompile Include="..\source\text.cpp" />
+    <ClCompile Include="..\source\wide_text.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

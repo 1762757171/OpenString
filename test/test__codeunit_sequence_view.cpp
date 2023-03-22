@@ -1,41 +1,52 @@
-#include "pch.h"
-#include "text_view.h"
 
-using namespace easy;
+#include "pch.h"
+
+using namespace ostr;
 
 TEST(codeunit_sequence_view, subview)
 {
-	SCOPED_DETECT_MEMORY_LEAK
+	SCOPED_DETECT_MEMORY_LEAK()
 	{
 		constexpr auto view = "sequence view"_cuqv;
-		constexpr codeunit_sequence_view subview = view.subview({ '[', 4, 10, ')'});
+		constexpr codeunit_sequence_view subview = view.subview(4, 6);
 		EXPECT_EQ(subview, "ence v"_cuqv);
 	}
 	{
 		constexpr auto view = "你好❤a𪚥"_cuqv;
-		constexpr codeunit_sequence_view subview = view[{ '[', 2, 13, ')'}];
+		constexpr codeunit_sequence_view subview = view.subview(2, 11);
 		EXPECT_EQ(subview, "\xA0好❤a\xF0\xAA\x9A"_cuqv);
 	}
 }
 
 TEST(codeunit_sequence_view, index_of)
 {
-	SCOPED_DETECT_MEMORY_LEAK
+	SCOPED_DETECT_MEMORY_LEAK()
 	{
 		constexpr auto view = "This is a long string"_cuqv;
-		constexpr i32 index_1 = view.index_of(" "_cuqv);
+		constexpr u64 index_1 = view.index_of(" "_cuqv);
 		EXPECT_EQ(index_1, 4);
 	}
 	{
 		constexpr auto view = "Hello world!"_cuqv;
-		constexpr i32 index = view.index_of("?"_cuqv);
-		EXPECT_EQ(index, index_invalid);
+		constexpr u64 index = view.index_of("?"_cuqv);
+		EXPECT_EQ(index, global_constant::INDEX_INVALID);
+	}
+	{
+		constexpr auto view = "{:r}"_cuqv;
+		constexpr u64 index_1 = view.index_of_any("{}"_cuqv);
+		EXPECT_EQ(index_1, 0);
+		constexpr u64 index_2 = view.index_of_any("{}"_cuqv, 1);
+		EXPECT_EQ(index_2, 3);
 	}
 	{
 		constexpr codeunit_sequence_view view("long long ago long");
 		EXPECT_EQ(view.index_of("long"_cuqv), 0);
-		EXPECT_EQ(view.index_of("long"_cuqv, {'[', 3, '~'}), 5);
+		EXPECT_EQ(view.index_of("long"_cuqv, 3), 5);
 		EXPECT_EQ(view.last_index_of("long"_cuqv), 14);
+		EXPECT_EQ(view.index_of_any("like"_cuqv), 0);
+		EXPECT_EQ(view.index_of_any("like"_cuqv, 3), 5);
+		EXPECT_EQ(view.last_index_of_any("like"_cuqv), 14);
+		EXPECT_EQ(view.last_index_of_any("like"_cuqv, 3, 4), 5);
 	}
 	{
 		constexpr codeunit_sequence_view view("你好❤a𪚥");
@@ -48,43 +59,47 @@ TEST(codeunit_sequence_view, index_of)
 
 TEST(codeunit_sequence_view, split)
 {
-	SCOPED_DETECT_MEMORY_LEAK
+	SCOPED_DETECT_MEMORY_LEAK()
 	{
 		constexpr auto view = "This is a long string"_cuqv;
 		constexpr auto subviews = view.split(" "_cuqv);
-		constexpr std::tuple answer { "This"_cuqv, "is a long string"_cuqv };
+		constexpr std::array<codeunit_sequence_view, 2> answer { "This"_cuqv, "is a long string"_cuqv };
 		EXPECT_EQ(subviews, answer);
 	}
 	{
 		constexpr auto view = "This is  a long string"_cuqv;
 		constexpr auto subviews = view.split("  "_cuqv);
-		constexpr std::tuple answer { "This is"_cuqv, "a long string"_cuqv };
+		constexpr std::array<codeunit_sequence_view, 2> answer { "This is"_cuqv, "a long string"_cuqv };
 		EXPECT_EQ(subviews, answer);
 	}
 	{
 		constexpr auto view = "Hello world!"_cuqv;
 		constexpr auto subviews = view.split("?"_cuqv);
-		constexpr std::tuple answer { "Hello world!"_cuqv, ""_cuqv };
+		constexpr std::array<codeunit_sequence_view, 2> answer { "Hello world!"_cuqv, ""_cuqv };
 		EXPECT_EQ(subviews, answer);
 	}
 }
 
 TEST(codeunit_sequence_view, count)
 {
-	SCOPED_DETECT_MEMORY_LEAK
+	SCOPED_DETECT_MEMORY_LEAK()
 	{
 		constexpr auto view = "This is a long string "_cuqv;
 		EXPECT_EQ(view.count(" "_cuqv), 5);
+		EXPECT_EQ(view.count(" "_cuqv, 5), 4);
+		EXPECT_EQ(view.count(" "_cuqv, 5, 5), 2);
 	}
 	{
 		constexpr auto view = "aaaaaaaaa"_cuqv;
 		EXPECT_EQ(view.count("aa"_cuqv), 4);
+		EXPECT_EQ(view.count("aa"_cuqv, 3), 3);
+		EXPECT_EQ(view.count("aa"_cuqv, 3, 3), 1);
 	}
 }
 
 TEST(codeunit_sequence_view, iterate)
 {
-	SCOPED_DETECT_MEMORY_LEAK
+	SCOPED_DETECT_MEMORY_LEAK()
 	{
 		static constexpr char sequence[] = "sequence view";
 		constexpr codeunit_sequence_view view(sequence);
@@ -98,7 +113,7 @@ TEST(codeunit_sequence_view, iterate)
 	{
 		static constexpr char sequence[] = "你好❤a𪚥";
 		constexpr codeunit_sequence_view view(sequence);
-		constexpr codeunit_sequence_view subview = view.subview({ '[', 2, 13,')'});
+		constexpr codeunit_sequence_view subview = view.subview(2, 11);
 		u32 index = 2;
 		for(auto u : subview)
 		{
@@ -111,7 +126,7 @@ TEST(codeunit_sequence_view, iterate)
 
 TEST(codeunit_sequence_view, equal)
 {
-	SCOPED_DETECT_MEMORY_LEAK
+	SCOPED_DETECT_MEMORY_LEAK()
 	{
 		constexpr codeunit_sequence_view view_default_ctor;
 		EXPECT_EQ(view_default_ctor, "");
@@ -135,7 +150,7 @@ TEST(codeunit_sequence_view, equal)
 
 TEST(codeunit_sequence_view, trim)
 {
-	SCOPED_DETECT_MEMORY_LEAK
+	SCOPED_DETECT_MEMORY_LEAK()
 	{
 		constexpr codeunit_sequence_view view("   123 1234  \t  ");
 		
@@ -186,7 +201,7 @@ TEST(codeunit_sequence_view, trim)
 
 TEST(codeunit_sequence_view, starts_ends_with)
 {
-	SCOPED_DETECT_MEMORY_LEAK
+	SCOPED_DETECT_MEMORY_LEAK()
 	{
 		constexpr codeunit_sequence_view view("   123 1234  \t  ");
 		EXPECT_TRUE(view.starts_with("  "_cuqv));
