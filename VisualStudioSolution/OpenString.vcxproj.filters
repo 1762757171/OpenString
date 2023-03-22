@@ -38,12 +38,24 @@
     <ClInclude Include="..\include\common\unicode.h">
       <Filter>include\common</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\codeunit_sequence_view.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\codeunit_sequence.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\common\platforms.h">
+      <Filter>include\common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\text.cpp">
       <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="..\source\format.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\codeunit_sequence.cpp">
       <Filter>source</Filter>
     </ClCompile>
   </ItemGroup>

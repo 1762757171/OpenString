@@ -200,7 +200,7 @@ text text::join(const Container& container, const text_view& separator) noexcept
 [[nodiscard]] bool operator==(const text_view& lhs, const text& rhs) noexcept;
 
 template<> 
-struct formatter<text>
+struct argument_formatter<text>
 {
     static codeunit_sequence format_argument(const text& value, const codeunit_sequence_view& specification)
     {

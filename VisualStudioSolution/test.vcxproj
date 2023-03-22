@@ -44,7 +44,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)include;$(SolutionDir)test\platform;$(IncludePath)</IncludePath>
     <IntDir>$(Platform)\$(Configuration)\test\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -54,6 +54,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -77,17 +78,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\test\codeunit_sequence_view__test.cpp" />
-    <ClCompile Include="..\test\codeunit_sequence__test.cpp" />
-    <ClCompile Include="..\test\format__test.cpp" />
-    <ClCompile Include="..\test\index_interval__test.cpp" />
     <ClCompile Include="..\test\main.cpp" />
-    <ClCompile Include="..\test\text_view__test.cpp" />
-    <ClCompile Include="..\test\text__test.cpp" />
+    <ClCompile Include="..\test\test__codeunit_sequence.cpp" />
+    <ClCompile Include="..\test\test__codeunit_sequence_view.cpp" />
+    <ClCompile Include="..\test\test__format.cpp" />
+    <ClCompile Include="..\test\test__index_interval.cpp" />
+    <ClCompile Include="..\test\test__text.cpp" />
+    <ClCompile Include="..\test\test__text_view.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\test\gtest_printers_extension.h" />
-    <ClInclude Include="..\test\scoped_memory_leak_detector.h" />
+    <ClInclude Include="..\test\common\gtest_printers_extension.h" />
+    <ClInclude Include="..\test\common\scoped_memory_leak_detector.h" />
     <ClInclude Include="..\test\pch.h" />
   </ItemGroup>
   <ItemGroup>
