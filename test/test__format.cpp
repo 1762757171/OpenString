@@ -4,7 +4,7 @@
 
 using namespace easy;
 
-#define EXPECT_CHECKED_WITH_MESSAGE(statement, expected_message)
+#define EXPECT_CHECKED_WITH_MESSAGE(statement, expected_message) ((void)(statement))
 
 TEST(format, built_in_types)
 {
