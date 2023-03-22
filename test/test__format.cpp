@@ -4,7 +4,7 @@
 
 using namespace easy;
 
-#define EXPECT_CHECKED_WITH_MESSAGE(statement, expected_message) ((void)(statement))
+#define EXPECT_CHECKED_WITH_MESSAGE(statement, expected_message)
 
 TEST(format, built_in_types)
 {
@@ -50,7 +50,7 @@ TEST(format, undefined_type)
         int a;
         int b;
     };
-    constexpr test_struct ts1 { 123456, 654321 };
+    [[maybe_unused]]constexpr test_struct ts1 { 123456, 654321 };
     EXPECT_CHECKED_WITH_MESSAGE(format("{}"_cuqv, ts1), "Undefined format with raw memory bytes: 40 e2 01 00 f1 fb 09 00!");
     constexpr test_struct ts2 { 17627, 57171 };
     EXPECT_EQ(format("{:r}"_cuqv, ts2), "[Undefined type (raw: db 44 00 00 53 df 00 00)]"_cuqv);
