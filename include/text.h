@@ -202,7 +202,7 @@ text text::join(const Container& container, const text_view& separator) noexcept
 template<> 
 struct argument_formatter<text>
 {
-    static codeunit_sequence format_argument(const text& value, const codeunit_sequence_view& specification)
+    static codeunit_sequence produce(const text& value, const codeunit_sequence_view& specification)
     {
         return value.raw();
     }
