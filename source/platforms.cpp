@@ -3,9 +3,10 @@
 // Copyright (c) 2023 - present, [Hoshizora Ming]
 // All rights reserved.
 
-#if _WIN64
 #include "text.h"
 #include "adapters.h"
+
+#if _WIN64
 
 #define WIN32_LEAN_AND_MEAN
 #include <algorithm>
