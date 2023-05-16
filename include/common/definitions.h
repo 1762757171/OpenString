@@ -111,7 +111,7 @@ OPEN_STRING_NS_END
     { \
         if(OPEN_STRING_UNLIKELY(!(expression))) \
         { \
-            OPEN_STRING_PRINT_DEBUG_MESSAGE("\nCheck failed: {}\n\t[" __FILE__ ":" OPEN_STRING_STRINGIFY_EXPANDED(__LINE__) "] " OPEN_STRING_STRINGIFY(expression) "\n", __VA_ARGS__ ); \
+            OPEN_STRING_PRINT_DEBUG_MESSAGE(OSTR_UTF8("\nCheck failed: {}\n\t[" __FILE__ ":" OPEN_STRING_STRINGIFY_EXPANDED(__LINE__) "] " OPEN_STRING_STRINGIFY(expression) "\n"), __VA_ARGS__ ); \
             OPEN_STRING_DEBUG_BREAK(); \
         } \
     }
