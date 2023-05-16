@@ -19,22 +19,22 @@ namespace details
         return count;
     }
 
-    [[nodiscard]] constexpr char from_digit(const i64 digit)
+    [[nodiscard]] constexpr ochar8_t from_digit(const i64 digit)
     {
-        constexpr char digits[] = "0123456789abcdef";
+        constexpr ochar8_t digits[] = OSTR_UTF8("0123456789abcdef");
         return digits[digit];
     }
 }
 
 codeunit_sequence details::format_integer(const i64& value, const codeunit_sequence_view& specification)
 {
-    char type = 'd';
+    ochar8_t type = OSTR_UTF8('d');
     i32 holding = -1;
     bool with_prefix = false;
     if (!specification.is_empty())
     {
         codeunit_sequence_view parsing = specification;
-        if ("bcdox"_cuqv.contains(parsing[-1]))
+        if (OSTR_UTF8("bcdox"_cuqv).contains(parsing[-1]))
         {
             type = parsing[-1];
             parsing = parsing.subview({ '[', 0, -2, ']' });
@@ -45,8 +45,8 @@ codeunit_sequence details::format_integer(const i64& value, const codeunit_seque
             if(zero_index != index_invalid)
             {
                 const codeunit_sequence_view holding_view = parsing.subview({ '(', zero_index, '~' });
-                const auto [ last, error ] = std::from_chars(holding_view.c_str(), holding_view.last(), holding);
-                OPEN_STRING_CHECK(last == holding_view.last(), "Invalid format specification [{}]!", specification)
+                const auto [ last, error ] = std::from_chars((const char*)holding_view.c_str(), (const char*)holding_view.last(), holding);
+                OPEN_STRING_CHECK((ochar8_t*)last == holding_view.last(), OSTR_UTF8("Invalid format specification [{}]!"), specification)
                 parsing = parsing.subview({ '[', 0, zero_index, ')' });
             }
         }
@@ -58,7 +58,7 @@ codeunit_sequence details::format_integer(const i64& value, const codeunit_seque
                 parsing = parsing.subview({ '[', 0, -1, ')' });
             }
         }
-        OPEN_STRING_CHECK(parsing.is_empty(), "Invalid format specification [{}]!", specification)
+        OPEN_STRING_CHECK(parsing.is_empty(), OSTR_UTF8("Invalid format specification [{}]!"), specification)
     }
     i32 base = 10;
     codeunit_sequence_view prefix;
@@ -66,27 +66,27 @@ codeunit_sequence details::format_integer(const i64& value, const codeunit_seque
     {
     case 'b':
         base = 2;
-        prefix = "0b"_cuqv;
+        prefix = OSTR_UTF8("0b"_cuqv);
         break;
     case 'c':
-        return codeunit_sequence{ static_cast<char>(value) };
+        return codeunit_sequence{ static_cast<ochar8_t>(value) };
     case 'd':
         break;
     case 'o':
         base = 8;
-        prefix = "0o"_cuqv;
+        prefix = OSTR_UTF8("0o"_cuqv);
         break;
     case 'x':
         base = 16;
-        prefix = "0x"_cuqv;
+        prefix = OSTR_UTF8("0x"_cuqv);
         break;
     default:
         break;
     }
     if(!with_prefix)
-        prefix = ""_cuqv;
+        prefix = OSTR_UTF8(""_cuqv);
     
-    const codeunit_sequence_view sign = (value < 0) ? "-"_cuqv : ""_cuqv;
+    const codeunit_sequence_view sign = (value < 0) ? OSTR_UTF8("-"_cuqv) : OSTR_UTF8(""_cuqv);
     const i32 digit_count = details::get_integer_digit_count(value, base);
     const i32 preserve = (holding > digit_count) ? holding : digit_count;
     const i32 zero_count = preserve - digit_count;
@@ -96,7 +96,7 @@ codeunit_sequence details::format_integer(const i64& value, const codeunit_seque
     i64 remaining = value >= 0 ? value : -value;
     for(i32 i = 0; i < digit_count; ++i)
     {
-        const char digit = details::from_digit(remaining % base); 
+        const ochar8_t digit = details::from_digit(remaining % base); 
         remaining /= base;
         result.append(digit);
     }
@@ -107,15 +107,15 @@ codeunit_sequence details::format_integer(const i64& value, const codeunit_seque
 codeunit_sequence details::format_float(const float& value, const codeunit_sequence_view& specification)
 {
     if (std::isinf(value))
-        return codeunit_sequence{ value < 0 ? "-inf"_cuqv : "inf"_cuqv };
+        return codeunit_sequence{ value < 0 ? OSTR_UTF8("-inf"_cuqv) : OSTR_UTF8("inf"_cuqv) };
     if (std::isnan(value))
-        return codeunit_sequence{ "nan"_cuqv };
+        return codeunit_sequence{ OSTR_UTF8("nan"_cuqv) };
     i32 precision = -1;
-    char type = 'g';
+    ochar8_t type = OSTR_UTF8('g');
     if (!specification.is_empty())
     {
         codeunit_sequence_view parsing = specification;
-        if("aefg"_cuqv.contains( parsing[-1] ))
+        if(OSTR_UTF8("aefg"_cuqv).contains( parsing[-1] ))
         {    
             type = parsing[-1];
             parsing = parsing.subview({ '[', 0, -2, ']' });
@@ -126,12 +126,13 @@ codeunit_sequence details::format_float(const float& value, const codeunit_seque
             if(dot_index != index_invalid)
             {
                 const codeunit_sequence_view precision_view = parsing.subview({ '(', dot_index, '~' });
-                const auto [ last, error ] = std::from_chars(precision_view.c_str(), precision_view.last(), precision);
-                OPEN_STRING_CHECK(last == precision_view.last(), "Invalid format specification [{}]!", specification)
+                const auto [ last, error ] = std::from_chars(
+                    precision_view.c_str(), (const char*)precision_view.last(), precision);
+                OPEN_STRING_CHECK(last == (const char*)precision_view.last(), OSTR_UTF8("Invalid format specification [{}]!"), specification)
                 parsing = parsing.subview({ '[', 0, dot_index, ')' });
             }
         }
-        OPEN_STRING_CHECK(parsing.is_empty(), "Invalid format specification [{}]!", specification)
+        OPEN_STRING_CHECK(parsing.is_empty(), OSTR_UTF8("Invalid format specification [{}]!"), specification)
     }
     switch (type) 
     {
@@ -147,11 +148,11 @@ codeunit_sequence details::format_float(const float& value, const codeunit_seque
         break;
     }
     static constexpr i32 max_precision = 9;
-    OPEN_STRING_CHECK(precision <= max_precision, "Too high precision for float type [{}]!", precision)
+    OPEN_STRING_CHECK(precision <= max_precision, OSTR_UTF8("Too high precision for float type [{}]!"), precision)
     codeunit_sequence result;
     const bool negative = value < 0;
     if(negative)
-        result.append("-");
+        result.append(OSTR_UTF8("-"));
     float remaining = negative ? -value : value;
     const i32 decimal = static_cast<i32>(remaining);
     result.append(format_integer(decimal, { }));
