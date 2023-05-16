@@ -27,7 +27,65 @@
 #define OPEN_STRING_STRINGIFY_EXPANDED(x) OPEN_STRING_STRINGIFY(x)
 #endif
 
-#include "platforms.h"
+#if __cpp_char8_t
+
+    #ifdef OSTR_USE_CXX20_CHAR8_TYPE
+    #ifndef OCHAR8_TYPE
+        #define OCHAR8_TYPE char8_t
+    #endif
+    #define OSTR_UTF8(str) u8##str
+
+    #else
+
+    #ifndef OCHAR8_TYPE
+        #define OCHAR8_TYPE char
+    #endif
+    #define OSTR_UTF8(str) str
+
+    #endif
+#endif
+
+#ifndef OSTR_UTF8
+    #if __cplusplus >= 201100L
+    #define OSTR_UTF8(str) u8##str
+    #else
+    #define OSTR_UTF8(str) str
+    #endif
+#endif
+
+#ifndef OCHAR_TYPE
+#define OCHAR_TYPE char
+#endif
+
+#ifndef OCHAR8_TYPE
+#define OCHAR8_TYPE char
+#endif
+
+using ochar_t = OCHAR_TYPE;
+using ochar8_t = OCHAR8_TYPE; 
+
+OPEN_STRING_NS_BEGIN
+OPEN_STRING_API void PlatformReportError(const char* str);
+OPEN_STRING_NS_END
+
+#if _WIN64
+    #ifndef NOMINMAX
+    #define NOMINMAX
+    #endif
+
+    #define OPEN_STRING_PRINT_DEBUG_MESSAGE(...)	\
+    {	\
+        [](const auto* debug_format, const auto* message_format, auto&&...args)	\
+        {	\
+            const OPEN_STRING_NS::codeunit_sequence message = OPEN_STRING_NS::format(message_format, args...);	\
+            PlatformReportError(OPEN_STRING_NS::format((const ochar8_t*)debug_format, message).c_str());	\
+        }(__VA_ARGS__);	\
+    }	\
+
+    // Visual Studio will not trigger the breakpoint during single-step debugging without __nop()
+    #include <intrin.h>
+    #define OPEN_STRING_DEBUG_BREAK() (__nop(), __debugbreak())
+#endif
 
 #ifndef OPEN_STRING_UNLIKELY
 #define OPEN_STRING_UNLIKELY(expression)    (!!(expression))

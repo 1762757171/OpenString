@@ -14,7 +14,7 @@ void codeunit_sequence_construct(benchmark::State& state)
 {
 	for (auto _ : state)
 	{
-		easy::codeunit_sequence empty_sequence;
+		OPEN_STRING_NS::codeunit_sequence empty_sequence;
 	}
 }
 

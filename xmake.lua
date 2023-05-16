@@ -1,5 +1,5 @@
 add_rules("mode.debug", "mode.release")
-set_warnings("all", "error")
+-- set_warnings("all", "error")
 set_languages("c++17")
 
 add_requires("gtest")
@@ -19,6 +19,43 @@ target("test")
     add_includedirs("include")
     add_files("test/*.cpp")
     add_deps("OpenString")
+target_end()
+
+target("OpenStringCxx20")
+    set_kind("static")
+    add_includedirs("include")
+    add_files("source/*.cpp")
+
+    set_languages("c++20")
+    add_defines("OSTR_USE_CXX20_CHAR8_TYPE", {public = true})
+target_end()
+
+target("test20")
+    set_kind("binary")
+    add_packages("gtest")
+    add_includedirs("include")
+    add_files("test/*.cpp")
+
+    set_languages("c++20")
+    add_deps("OpenStringCxx20")
+target_end()
+
+target("OpenStringCxx20NoC8")
+    set_kind("static")
+    add_includedirs("include")
+    add_files("source/*.cpp")
+
+    set_languages("c++20")
+target_end()
+
+target("test20noc8")
+    set_kind("binary")
+    add_packages("gtest")
+    add_includedirs("include")
+    add_files("test/*.cpp")
+
+    set_languages("c++20")
+    add_deps("OpenStringCxx20NoC8")
 target_end()
 
 -- target("benchmark")

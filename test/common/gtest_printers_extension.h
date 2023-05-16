@@ -9,7 +9,7 @@ OPEN_STRING_NS_BEGIN
 inline std::ostream& operator<<(std::ostream& os, const codeunit_sequence_view& v)
 {
 	for(const auto c : v)
-		os << c;
+		os << (const char)c;
 	return os;
 }
 	
@@ -20,13 +20,13 @@ inline std::ostream& operator<<(std::ostream& os, const codeunit_sequence& v)
 
 inline std::ostream& operator<<(std::ostream& os, const index_interval& v)
 {
-	return os << format("{}"_cuqv, v);
+	return os << format(OSTR_UTF8("{}"_cuqv), v);
 }
 
 inline std::ostream& operator<<(std::ostream& os, const codepoint& v)
 {
-	const codeunit_sequence s = codeunit_sequence::join(v, ", "_cuqv);
-	os << "[ " << s << " ] = " << v.get_codepoint();
+	const codeunit_sequence s = codeunit_sequence::join(v, OSTR_UTF8(", "_cuqv));
+	os << "[ " << s << " ] = " << (const char)v.get_codepoint();
 	return os;
 }
 

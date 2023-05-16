@@ -98,16 +98,16 @@ namespace details
 
             [[nodiscard]] constexpr std::tuple<run_type, index_interval> parse_run(const i32 from) const
             {
-                const i32 index = this->format_mold.index_any_of("{}"_cuqv, { '[', from, '~' });
+                const i32 index = this->format_mold.index_any_of(OSTR_UTF8("{}"_cuqv), { '[', from, '~' });
                 if(index == index_invalid)
                     return { run_type::plain_text, { '[', from, '~' } };
                 if(from != index)
                     return { run_type::plain_text, { '[', from, index, ')' } };
                 if(format_mold[index] == format_mold[index+1])
                     return { run_type::escaped_brace, { '[', index, index + 1, ']' } };
-                OPEN_STRING_CHECK(format_mold[index] != '}', "Unclosed right brace is not allowed!")
-                const i32 index_next = this->format_mold.index_any_of("{}"_cuqv, { '(', index, '~' });
-                OPEN_STRING_CHECK(index_next != index_invalid && format_mold[index_next] != '{', "Unclosed left brace is not allowed!")
+                OPEN_STRING_CHECK(format_mold[index] != '}', OSTR_UTF8("Unclosed right brace is not allowed!"))
+                const i32 index_next = this->format_mold.index_any_of(OSTR_UTF8("{}"_cuqv), { '(', index, '~' });
+                OPEN_STRING_CHECK(index_next != index_invalid && format_mold[index_next] != '{', OSTR_UTF8("Unclosed left brace is not allowed!"))
                 return { run_type::formatter, { '[', index, index_next, ']' } };
             }
             
@@ -188,23 +188,23 @@ namespace details
                 break;
             case format_mold_view::run_type::formatter:
             {    
-                const auto [ index_run, specification ] = run.subview({ '[', 1, -2, ']' }).split(":"_cuqv);
+                const auto [ index_run, specification ] = run.subview({ '[', 1, -2, ']' }).split(OSTR_UTF8(":"_cuqv));
                 i32 current_index = next_index;
                 if (index_run.is_empty())
                 {
-                    OPEN_STRING_CHECK(next_index != manual_index, "Manual index is not allowed mixing with automatic index!")
+                    OPEN_STRING_CHECK(next_index != manual_index, OSTR_UTF8("Manual index is not allowed mixing with automatic index!"))
                     ++next_index;
                 }
                 else
                 {
-                    OPEN_STRING_CHECK(next_index <= 0, "Automatic index is not allowed mixing with manual index!")
+                    OPEN_STRING_CHECK(next_index <= 0, OSTR_UTF8("Automatic index is not allowed mixing with manual index!"))
                     [[maybe_unused]] const auto [ last, error ] = 
-                        std::from_chars(index_run.c_str(), index_run.last(), current_index);
-                    OPEN_STRING_CHECK(last == index_run.last(), "Invalid format index [{}]!", index_run)
+                        std::from_chars(index_run.c_str(), (const char*)index_run.last(), current_index);
+                    OPEN_STRING_CHECK(last == (const char*)index_run.last(), OSTR_UTF8("Invalid format index [{}]!"), index_run)
                     next_index = manual_index;
                 }
-                OPEN_STRING_CHECK(current_index >= 0, "Invalid format index [{}]: Index should not be negative!", current_index)
-                OPEN_STRING_CHECK(current_index < argument_count, "Invalid format index [{}]: Index should be less than count of argument [{}]!", current_index, argument_count)
+                OPEN_STRING_CHECK(current_index >= 0, OSTR_UTF8("Invalid format index [{}]: Index should not be negative!"), current_index)
+                OPEN_STRING_CHECK(current_index < argument_count, OSTR_UTF8("Invalid format index [{}]: Index should be less than count of argument [{}]!"), current_index, argument_count)
                 result += arguments[current_index].produce(specification);
             }
                 break;
@@ -264,21 +264,21 @@ struct argument_formatter<index_interval>
     static codeunit_sequence produce(const index_interval& value, const codeunit_sequence_view& specification)
     {
         if(value.is_empty())
-            return codeunit_sequence{ "∅"_cuqv };
+            return codeunit_sequence{ OSTR_UTF8("∅"_cuqv) };
         const index_interval::bound lower = value.get_lower_bound();
         codeunit_sequence lower_part;
         switch(lower.type)
         {
         case index_interval::bound::inclusion::inclusive:
-            lower_part = "["_cuqv;
+            lower_part = OSTR_UTF8("["_cuqv);
             lower_part += details::format_integer(lower.value, { });
             break;
         case index_interval::bound::inclusion::exclusive:
-            lower_part = "("_cuqv;
+            lower_part = OSTR_UTF8("("_cuqv);
             lower_part += details::format_integer(lower.value, { });
             break;
         case index_interval::bound::inclusion::infinity:
-            lower_part = "(-∞"_cuqv;
+            lower_part = OSTR_UTF8("(-∞"_cuqv);
             break;
         }
         const index_interval::bound upper = value.get_upper_bound();
@@ -287,33 +287,33 @@ struct argument_formatter<index_interval>
         {
         case index_interval::bound::inclusion::inclusive:
             upper_part = details::format_integer(upper.value, { });
-            upper_part += "]"_cuqv;
+            upper_part += OSTR_UTF8("]"_cuqv);
             break;
         case index_interval::bound::inclusion::exclusive:
             upper_part = details::format_integer(upper.value, { });
-            upper_part += ")"_cuqv;
+            upper_part += OSTR_UTF8(")"_cuqv);
             break;
         case index_interval::bound::inclusion::infinity:
-            upper_part = "+∞)"_cuqv;
+            upper_part = OSTR_UTF8("+∞)"_cuqv);
             break;
         }
-        return format("{},{}"_cuqv, lower_part, upper_part);
+        return format(OSTR_UTF8("{},{}"_cuqv), lower_part, upper_part);
     }
 };
 
 template<> 
-struct argument_formatter<const char*>
+struct argument_formatter<const ochar8_t*>
 {
-    static codeunit_sequence produce(const char* value, const codeunit_sequence_view& specification)
+    static codeunit_sequence produce(const ochar8_t* value, const codeunit_sequence_view& specification)
     {
         return codeunit_sequence{value};
     }
 };
 
 template<size_t N> 
-struct argument_formatter<char[N]>
+struct argument_formatter<ochar8_t[N]>
 {
-    static codeunit_sequence produce(const char (&value)[N], const codeunit_sequence_view& specification)
+    static codeunit_sequence produce(const ochar8_t (&value)[N], const codeunit_sequence_view& specification)
     {
         return codeunit_sequence{value};
     }
@@ -342,7 +342,7 @@ struct argument_formatter<std::nullptr_t>
 {
     static codeunit_sequence produce(std::nullptr_t, const codeunit_sequence_view& specification)
     {
-        return codeunit_sequence{"nullptr"_cuqv};
+        return codeunit_sequence{OSTR_UTF8("nullptr"_cuqv)};
     }
 };
 
@@ -351,7 +351,7 @@ struct argument_formatter<T*>
 {
     static codeunit_sequence produce(const T* value, const codeunit_sequence_view& specification)
     {
-        return details::format_integer(reinterpret_cast<i64>(value), "#016x"_cuqv);
+        return details::format_integer(reinterpret_cast<i64>(value), OSTR_UTF8("#016x"_cuqv));
     }
 };
 
@@ -366,14 +366,14 @@ codeunit_sequence argument_formatter<T>::produce(const T& value, const codeunit_
     for(i32 i = 0; i < size; ++i)
     {
         const u8 memory = reader[i];
-        raw += " "_cuqv;
-        raw += details::format_integer(memory, "02x"_cuqv);
+        raw += OSTR_UTF8(" "_cuqv);
+        raw += details::format_integer(memory, OSTR_UTF8("02x"_cuqv));
     }
     
-    if(specification == "r"_cuqv)   // output raw memory bytes
-        return format("[Undefined type (raw:{})]"_cuqv, raw);
+    if(specification == OSTR_UTF8("r"_cuqv))   // output raw memory bytes
+        return format(OSTR_UTF8("[Undefined type (raw:{})]"_cuqv), raw);
 
-    OPEN_STRING_CHECK(false, "Undefined format with raw memory bytes:{}!", raw)
+    OPEN_STRING_CHECK(false, OSTR_UTF8("Undefined format with raw memory bytes:{}!"), raw)
     return { };
 }
 
