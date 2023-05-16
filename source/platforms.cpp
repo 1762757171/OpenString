@@ -4,12 +4,12 @@
 // All rights reserved.
 
 #if _WIN64
+#include "text.h"
+#include "adapters.h"
 
 #define WIN32_LEAN_AND_MEAN
 #include <algorithm>
 #include <memory.h>
-#include "text.h"
-#include "adapters.h"
 
 #include <intrin.h>
 #include <Windows.h>
