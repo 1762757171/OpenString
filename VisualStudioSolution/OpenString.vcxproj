@@ -54,6 +54,8 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -78,15 +80,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\include\adapters.h" />
+    <ClInclude Include="..\include\codeunit_sequence.h" />
+    <ClInclude Include="..\include\codeunit_sequence_view.h" />
     <ClInclude Include="..\include\common\basic_types.h" />
     <ClInclude Include="..\include\common\definitions.h" />
     <ClInclude Include="..\include\common\index_interval.h" />
+    <ClInclude Include="..\include\common\platforms.h" />
     <ClInclude Include="..\include\common\unicode.h" />
     <ClInclude Include="..\include\format.h" />
     <ClInclude Include="..\include\text.h" />
     <ClInclude Include="..\include\text_view.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\source\codeunit_sequence.cpp" />
     <ClCompile Include="..\source\format.cpp" />
     <ClCompile Include="..\source\text.cpp" />
   </ItemGroup>
